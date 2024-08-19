@@ -3,6 +3,7 @@ from django.contrib import auth, messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from .forms import LoginForm
+from .models import Account
 
 
 @login_required
@@ -26,3 +27,9 @@ def custom_login(request):
     else:
         form = LoginForm()
     return render(request, "accounts/login.html", {"form": form})
+
+
+@login_required
+def list_accounts(request):
+    accounts = Account.objects.all()
+    return render(request, "accounts/account_list.html", {"accounts": accounts})
