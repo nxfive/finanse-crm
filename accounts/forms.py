@@ -41,3 +41,7 @@ class AccountUpdateForm(forms.ModelForm):
         model = Account
         fields = ("email", "password", "phone_number", "is_active", "is_staff", "is_superuser",)
 
+
+class LoginForm(forms.Form):
+    email = forms.EmailField(widget=forms.EmailInput(attrs={"placeholder": "Email"}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={"placeholder": "Password"}))
