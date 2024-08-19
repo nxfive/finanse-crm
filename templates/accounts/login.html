@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<section>
+    <div class="login">
+        <h3>Welcome in <span>Django Finanse</span></h3>
+        <form class="login-form" method="POST">
+            {% csrf_token %}
+            <div class="form-lg">
+                <label for="id_username" class="label-login">Email</label>
+                {{ form.email }}
+            </div>
+            <div class="form-lg">
+                <label for="id_password" class="label-login">Password</label>
+                {{ form.password }}
+            </div>
+            <button type="submit" class="btn-login">Login</button>
+        </form>
+        <div class="no-passwd">
+            <a href="">Forgot password?</a>
+        </div>
+        <div class="no-account">
+            Don't have an account?
+            <a href="">Sign up!</a>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}
