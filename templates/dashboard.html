@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Django Finanse CRM</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" >
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css" >
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body class="dashboard">
+    <div class="nav-head-dash">
+        <nav class="navbar-dash">
+            <h1 class="logo-dash">Finanse<span>CRM</span></h1>
+            <div class="nav-menu-items">
+                <div class="nav-items-title">
+                    <a href="{% url 'leads:lead-list' %}">Leads <i class="fa-solid fa-angle-right"></i></a>
+                </div>
+            </div>
+            <div class="nav-logout">
+                <a href="">
+                    <i class='bx bx-log-out' ></i>
+                    Logout
+                </a>
+            </div>
+        </nav>
+        <div class="header-dash">
+            <div class="header-dash-items">
+                <div><a href="{% url 'dashboard' user.username %}"><h1>Dashboard</h1></a></div>
+                <div class="header-dash-note">
+                    <a href=""><i class="fa-solid fa-bell"></i></a>
+                    <a href=""><h3>{{ user.username }}</h3></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="dash-task-container">
+        <div class="dash-main">
+            <!-- THIS IS FOR ADMIN / MANAGER -->
+            <ul class="dash-main-items">
+                <li>
+                    <div>
+                        <h3>Total Companies</h3>
+                        <h2>4</h2>
+                    </div>
+                    <i class="fa-solid fa-people-group"></i>
+                </li>
+                <li class="ok">
+                    <div>
+                        <h3>Total Sales</h3>
+                        <h2>4</h2>
+                    </div>
+                    <i class="fa-solid fa-check"></i>
+                </li>
+                <li class="wait">
+                    <div>
+                        <h3>Pending Sales</h3>
+                        <h2>4</h2>
+                    </div>
+                    <i class="fa-solid fa-comments-dollar"></i>
+                </li>
+                <li class="nok">
+                    <div>
+                        <h3>Rejected Sales</h3>
+                        <h2>4</h2>
+                    </div>
+                    <i class="fa-solid fa-xmark"></i>
+                </li>
+                <li>
+                    <div>
+                        <h3>Amount Sales</h3>
+                        <h2>345,500.00</h2>
+                    </div>
+                    <i class="fa-solid fa-dollar-sign"></i>
+                </li>
+            </ul>
+        </div>
+    </div>
+    {% block content %}
+
+    {% endblock content %}
+</body>
+</html>
