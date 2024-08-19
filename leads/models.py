@@ -1,9 +1,22 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class Lead(models.Model):
+    class FinancialProducts(models.TextChoices):
+        NONE = "", _("Select Product")
+        CREDIT_CARD = "CC", _("Credit Card")
+        INVESTMENTS = "INV", _("Investments")
+        DEPOSITS = "DEP", _("Deposits")
+        CURRENCY = "CUR", _("Currency")
+        LOAN = "LO", _("Loan")
+
+        def __str__(self):
+            return f"{self.get_product_display()}"
+
     first_name = models.CharField(max_length=25)
     phone_number = models.CharField(max_length=25)
+    product = models.CharField(max_length=25, choices=FinancialProducts.choices)
     message = models.TextField(max_length=500, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
