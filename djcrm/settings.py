@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     "leads",
     "accounts",
     "agents",
+    "teams",
+    "managers",
 ]
 
 MIDDLEWARE = [
