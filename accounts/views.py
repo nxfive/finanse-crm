@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from .forms import LoginForm
 from .models import Account
+from core.utils import paginate_queryset
 
 
 @login_required
@@ -31,5 +32,12 @@ def custom_login(request):
 
 @login_required
 def list_accounts(request):
-    accounts = Account.objects.all()
-    return render(request, "accounts/account_list.html", {"accounts": accounts})
+    return render(
+        request,
+        "accounts/account_list.html",
+        {
+            "accounts": paginate_queryset(
+                request=request, queryset=Account.objects.all(), pages=8
+            )
+        },
+    )
