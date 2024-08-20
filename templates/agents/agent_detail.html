@@ -1,0 +1,95 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="model-container">
+    <div class="title">
+        <h1>Agent Details</h1>
+    </div>
+    <div class="model-cont">
+        <div class="model-content-field">
+            <div class="model-content">
+                <div class="model-element">
+                    <p><i class="fa-solid fa-user"></i> {{ agent.user.first_name }} {{ agent.user.last_name }}</p>
+                    <p><i class="fa-solid fa-cake-candles"></i> {{ agent.birth_date }}</p>
+                </div>
+                <div class="model-element">
+                    <p><i class="fa-solid fa-user-tie"></i> {{ agent.role }}</p>
+                </div>
+                <div class="model-element">
+                    <p><i class="fa-solid fa-envelope"></i> {{ agent.user.email }}</p>
+                    <p><i class="fa-solid fa-phone"></i> {{ agent.user.phone_number }}</p>
+                </div>
+            </div>
+            <div class="model-content">
+                <div class="model-element">
+                        <p>Join: {{ agent.user.date_joined }}</p>
+                        <p>Last update: </p>
+                </div>
+                <div class="agent-stats">
+                    <h3>All:</h3>
+                    <ul>
+                        <li>
+                            <h3>New</h3>
+                            <p>{{ all_New }}</p>
+                        </li>
+                        <li>
+                            <h3>Contacted</h3>
+                            <p>{{ all_Contacted }}</p>
+                        </li>
+
+                        <li>
+                            <h3>Follow-up</h3>
+                            <p>{{ all_Followup }}</p>
+                        </li>
+                        <li>
+                            <h3>Closed</h3>
+                            <p>{{ all_Closed }}</p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="agent-stats">
+                    <h3>Today:</h3>
+                    <ul>
+                        <li>
+                            <h3>New</h3>
+                            <p>{{ today_New }}</p>
+                        </li>
+                        <li>
+                            <h3>Contacted</h3>
+                            <p>{{ today_Contacted }}</p>
+                        </li>
+
+                        <li>
+                            <h3>Follow-up</h3>
+                            <p>{{ today_Followup }}</p>
+                        </li>
+                        <li>
+                            <h3>Closed</h3>
+                            <p>{{ today_Closed }}</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="model-action-cont">
+            <ul>
+                <li>
+                    <a href="{% url 'agents:agent-update' agent.pk %}">
+                        <h3>Update Agent</h3>
+                        <p class="det-icon"><i class="fa-solid fa-pen-to-square"></i></p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'agents:agent-delete' agent.pk %}" id="agent-delete" >
+                        <h3>Delete Agent</h3>
+                        <p class="det-icon"><i class="fa-solid fa-trash"></i></p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
