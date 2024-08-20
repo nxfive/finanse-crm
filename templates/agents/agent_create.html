@@ -1,0 +1,31 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="model-container">
+    <div class="title">
+        <h1>Agent create</h1>
+    </div>
+    <div class="model-cont">
+        <div class="model-content">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="model-element">
+                    <p><i class="fa-solid fa-user-tie"></i> {{ form.user }}</p>
+                    <p><i class="fa-solid fa-cake-candles"></i> {{ form.birth_date }}</p>
+                </div>
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Role</p><p>{{ form.role }}</p>
+                    </div>
+                </div>
+                <div class="model-element-action">
+                    <button type="submit" class="btn-update-sub">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
