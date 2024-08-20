@@ -1,0 +1,76 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="lead-list">
+    <div class="title">
+        <h1>Accounts</h1>
+    </div>
+    <div class="list-container">
+        <div class="lead-content">
+            <table class="content-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Phone Number</th>
+                        <th>Date Joined</th>
+                        <th>Last Login</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for account in accounts %}
+                    <tr>
+                        <td>{{ account.pk }}</a></td>
+                        <td>{{ account.username }}</td>
+                        <td>{{ account.email }}</td>
+                        <td>{{ account.phone_number }}</td>
+                        <td>{{ account.date_joined }}</td>
+                        <td>{{ account.last_login }}</td>
+                        <td class="action">
+                            {% if user.is_superuser %}
+                            <a class="action-detail" href="">Details</a>
+                            <a class="action-update" href="">Update</a>
+                            <a class="action-delete" href="">Delete</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="page-pagination">
+        {% if accounts.has_other_pages %}
+        <ul class="pagination-items">
+            {% if accounts.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ accounts.previous_page_number }}"><i class="fa-solid fa-angle-left"></i></a></li>
+            {% else %}
+            <li class="page-item disabled"><a class="page-link" href="#"><i class="fa-solid fa-angle-left"></i></a></li>
+            {% endif %}
+    
+            {% for i in accounts.paginator.page_range %}
+                {% if i == 1 or i == accounts.paginator.num_pages or i >= accounts.number|add:-2 and i <= accounts.number|add:2 %}
+                    {% if accounts.number == i %}
+                    <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
+                    {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                {% elif i == accounts.number|add:-3 or i == accounts.number|add:3 %}
+                    <li class="page-item disabled"><a class="page-link" href="#">...</a></li>
+                {% endif %}
+            {% endfor %}
+    
+            {% if accounts.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ accounts.next_page_number }}"><i class="fa-solid fa-angle-right"></i></a></li>
+            {% else %}
+            <li class="page-item disabled"><a class="page-link" href="#"><i class="fa-solid fa-angle-right"></i></a></li>
+            {% endif %}
+        </ul>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock content %}
