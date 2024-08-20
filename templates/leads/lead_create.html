@@ -1,0 +1,35 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+
+{% block content %}
+<div class="model-container">
+    <div class="title">
+        <h1>Lead create</h1>
+    </div>
+    <div class="model-cont">
+        <div class="model-content">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="model-element-up">
+                    <p><i class="fa-solid fa-user"></i> {{ form.first_name }}</p>
+                </div>
+                <div class="model-element">
+                    <p><i class="fa-solid fa-phone"></i> {{ form.phone_number }}</p>
+                    <p><i class="fa-solid fa-comment"></i> {{ form.message }}</p>
+                </div>
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Product</p><p> {{ form.product }}</p>
+                    </div>
+                </div>
+                <div class="model-element-action">
+                    <a href=""><i class="fa-solid fa-arrow-left"></i>Details</a>
+                    <button type="submit" class="btn-agent-up">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
