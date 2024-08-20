@@ -42,6 +42,35 @@
             </table>
         </div>
     </div>
+    <div class="page-pagination">
+        {% if paged_agents.has_other_pages %}
+        <ul class="pagination-items">
+            {% if paged_agents.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ paged_agents.previous_page_number }}"><i class="fa-solid fa-angle-left"></i></a></li>
+            {% else %}
+            <li class="page-item disabled"><a class="page-link" href="#"><i class="fa-solid fa-angle-left"></i></a></li>
+            {% endif %}
+    
+            {% for i in paged_agents.paginator.page_range %}
+                {% if i == 1 or i == paged_agents.paginator.num_pages or i >= paged_agents.number|add:-2 and i <= paged_agents.number|add:2 %}
+                    {% if paged_agents.number == i %}
+                    <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
+                    {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                {% elif i == paged_agents.number|add:-3 or i == paged_agents.number|add:3 %}
+                    <li class="page-item disabled"><a class="page-link" href="#">...</a></li>
+                {% endif %}
+            {% endfor %}
+    
+            {% if paged_agents.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ paged_agents.next_page_number }}"><i class="fa-solid fa-angle-right"></i></a></li>
+            {% else %}
+            <li class="page-item disabled"><a class="page-link" href="#"><i class="fa-solid fa-angle-right"></i></a></li>
+            {% endif %}
+        </ul>
+        {% endif %}
+    </div>
 </div>
 
 {% endblock content %}
