@@ -1,5 +1,5 @@
+from typing import Any
 from django.urls import reverse_lazy
-from .forms import LeadCreateForm, LeadUpdateForm
 from django.views.generic import (
     CreateView,
     UpdateView,
@@ -7,15 +7,21 @@ from django.views.generic import (
     ListView,
     DetailView,
 )
-
+from .forms import LeadCreateForm, LeadUpdateForm
 from .models import Lead
+from core.utils import paginate_queryset
 
 
 class LeadListView(ListView):
     model = Lead
     template_name = "leads/lead_list.html"
     context_object_name = "leads"
+    paginate_by = 8
 
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["paged_leads"] = paginate_queryset(request=self.request, queryset=self.get_queryset(), pages=self.paginate_by)
+        return context
 
 class LeadCreateView(CreateView):
     form_class = LeadCreateForm
@@ -24,6 +30,7 @@ class LeadCreateView(CreateView):
 
 
 class LeadUpdateView(UpdateView):
+    model = Lead
     form_class = LeadUpdateForm
     template_name = "leads/lead_update.html"
 
@@ -40,5 +47,5 @@ class LeadDetailView(DetailView):
 class LeadDeleteView(DeleteView):
     model = Lead
     template_name = "leads/lead_delete.html"
-    context_object_name = "leads"
+    context_object_name = "lead"
     success_url = reverse_lazy("leads:lead-list")
