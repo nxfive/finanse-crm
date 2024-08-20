@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from agents.models import Agent
 
 class Lead(models.Model):
     class FinancialProducts(models.TextChoices):
@@ -29,6 +30,7 @@ class Lead(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     description = models.TextField(max_length=500)
     email = models.EmailField(unique=True, null=True, blank=True)
+    agent = models.ForeignKey(Agent, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         ordering = ("-created_at",)
