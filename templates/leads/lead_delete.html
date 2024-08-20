@@ -1,0 +1,70 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="model-container">
+    <div class="title">
+        <h1>Lead details</h1>
+    </div>
+    <div class="model-cont">
+        <div class="model-content-field">
+            <div class="model-content">
+                <div class="model-element">
+                    <p><i class="fa-solid fa-user"></i> {{ lead.first_name }}</p>
+                </div>
+                <div class="model-element">
+                    <p><i class="fa-solid fa-envelope"></i> {{ lead.email }}</p>
+                    <p><i class="fa-solid fa-phone"></i> {{ lead.phone_number }}</p>
+                </div>
+                <div class="fin-prod">
+                    <i class='bx bxs-tag-alt' ></i>
+                    <p>{{ lead.product }}</p>
+                </div>
+                <div class="lead-msg">
+                    <i class="fa-solid fa-comment"></i>
+                    <p>{{ lead.message }}</p>
+                </div>
+            </div>
+            <div class="model-content">
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Status</p><p> {{ lead.status}} </p>
+                    </div>
+                </div>
+                <div class="lead-msg">
+                    <i class="fa-solid fa-note-sticky"></i>
+                    <p>{{ lead.description }}</p>
+                </div>
+                <div class="model-element-action">
+                    <a href="{% url 'leads:lead-list' %}"><i class="fa-solid fa-arrow-left"></i>Leads</a>
+                </div>
+            </div>
+        </div>
+        <div class="model-action-cont">
+            <ul>
+                <li>
+                    <a href="{% url 'leads:lead-update' lead.pk %}">
+                        <h3>Update Lead</h3>
+                        <p class="det-icon"><i class="fa-solid fa-pen-to-square"></i></p>
+                    </a>
+                </li>
+                <li>
+                    <a href="">
+                        <h3>Delete Lead</h3>
+                        <p class="det-icon"><i class="fa-solid fa-trash"></i></p>
+                    </a>
+                </li>
+            </ul>
+            <div class="model-del-cont">
+                <h3>Are you sure you want to delete this lead?</h3>
+                <form method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-delete-sub">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
