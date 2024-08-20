@@ -15,7 +15,7 @@ class AgentListView(ListView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context["paged_agents"] = paginate_queryset(request=self.request, queryset=self.get_queryset(), pages=self.paginate_by)
+        context["agents"] = paginate_queryset(request=self.request, queryset=self.get_queryset(), pages=self.paginate_by)
         return context
 
 
