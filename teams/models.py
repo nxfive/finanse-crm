@@ -22,14 +22,17 @@ class Team(models.Model):
     def __str__(self):
         return f"{self.team_type}: {self.name}"
     
+    def generate_slug(self):
+        prefix = "sst" if self.team_type == self.TeamTypes.SUPPORT else "st"
+        base_slug = slugify(f"{prefix}-{self.name}")
+        slug = base_slug
+        num = 1
+        while Team.objects.filter(slug=slug).exists():
+            slug = f"{base_slug}-{num}"
+            num += 1
+        return slug
+
     def save(self, *args, **kwargs):
         if not self.slug:
-            prefix = "sst" if self.team_type == self.TeamTypes.SUPPORT else "st"
-            base_slug = slugify(f"{prefix}-{self.name}")
-            slug = base_slug
-            num = 1
-            while Team.objects.filter(slug=slug).exists():
-                slug = f"{base_slug}-{num}"
-                num += 1
-            self.slug = slug
+            self.slug = self.generate_slug()
         super().save(*args, **kwargs)
