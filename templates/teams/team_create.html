@@ -1,0 +1,38 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="model-container">
+    <div class="title">
+        <h1>Create Team</h1>
+    </div>
+    <div class="model-cont">
+        <div class="model-content-field">
+            <div class="model-content">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="model-element">
+                        <div class="as-icone-container">
+                            <p class="as-icone">Name</p><p> {{ form.name }}</p>
+                        </div>
+                    </div>
+                    <div class="model-element">
+                        <div class="as-icone-container">
+                            <p class="as-icone">Manager</p><p> {{ form.manager }}</p>
+                        </div>
+                        <div class="as-icone-container">
+                            <p class="as-icone">Team Type</p><p> {{ form.team_type }}</p>
+                        </div>
+                    </div>
+                    <div class="model-element-action">
+                        <a href="{% url 'teams:team-list' %}"><i class="fa-solid fa-arrow-left"></i>Details</a>
+                        <button type="submit" class="btn-agent-up">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
