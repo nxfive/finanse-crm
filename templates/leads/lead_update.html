@@ -1,0 +1,57 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+
+{% block content %}
+
+<div class="model-container">
+    <div class="title">
+        <h1>Lead update</h1>
+    </div>
+    <div class="model-cont">
+        <div class="model-content">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="model-element">
+                    <p><i class="fa-solid fa-user"></i> {{ form.first_name }}</p>
+                    <p><i class="fa-solid fa-envelope"></i> {{ form.email }}</p>
+                </div>
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Product</p><p> {{form.product}} </p>
+                    </div>
+                </div>
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Status</p><p> {{ form.status }}</p>
+                    </div>
+                </div>
+                <div class="model-element-up">
+                    <p><i class="fa-solid fa-note-sticky"></i> {{ form.description }}</p>
+                </div>
+                <div class="model-element-action">
+                    <a href="{% url 'leads:lead-list' %}"><i class="fa-solid fa-arrow-left"></i>Leads</a>
+                    <button type="submit" class="btn-agent-up">Update</button>
+                </div>
+            </form>
+        </div>
+        <div class="model-action-cont">
+            <ul>
+                <li>
+                    <a href="{% url 'leads:lead-detail' lead.pk %}">
+                        <h3>Lead Details</h3>
+                        <p class="det-icon"><i class="fa-solid fa-pen-to-square"></i></p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'leads:lead-delete' lead.pk %}">
+                        <h3>Delete Lead</h3>
+                        <p class="det-icon"><i class="fa-solid fa-trash"></i></p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
