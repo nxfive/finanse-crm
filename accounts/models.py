@@ -56,8 +56,10 @@ class Account(AbstractBaseUser):
     objects = AccountManager()
 
     def __str__(self):
-        return f"admin: {self.first_name} {self.last_name}"
-    
+        if self.is_superuser:
+            return f"admin: {self.first_name} {self.last_name}"
+        return f"{self.first_name} {self.last_name}"
+
     def has_perm(self, perm, obj=None):
         return True
 
