@@ -1,14 +1,22 @@
+from typing import Any
 from django.views.generic import CreateView, UpdateView, ListView, DetailView, DeleteView
 from django.urls import reverse_lazy
 
 from .models import Agent
 from .forms import AgentCreateForm, AgentUpdateForm
+from core.utils import paginate_queryset
 
 
 class AgentListView(ListView):
     model = Agent
     template_name = "agents/agent_list.html"
     context_object_name = "agents"
+    paginate_by = 8
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["paged_agents"] = paginate_queryset(request=self.request, queryset=self.get_queryset(), pages=self.paginate_by)
+        return context
 
 
 class AgentCreateView(CreateView):
