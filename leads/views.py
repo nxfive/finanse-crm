@@ -20,8 +20,9 @@ class LeadListView(ListView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context["paged_leads"] = paginate_queryset(request=self.request, queryset=self.get_queryset(), pages=self.paginate_by)
+        context["leads"] = paginate_queryset(request=self.request, queryset=self.get_queryset(), pages=self.paginate_by)
         return context
+
 
 class LeadCreateView(CreateView):
     form_class = LeadCreateForm
