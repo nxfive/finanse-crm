@@ -6,6 +6,11 @@ class LeadCreateForm(forms.ModelForm):
     class Meta:
         model = Lead
         fields = ("first_name", "phone_number", "message", "product", )
+        widgets = {
+            "first_name": forms.TextInput(attrs={"placeholder": "Enter lead name"}),
+            "phone_number": forms.TextInput(attrs={"placeholder": "Enter lead phone number"}),
+            "message": forms.Textarea(attrs={"placeholder": "Enter lead message"})
+        }
 
 
 class LeadUpdateForm(forms.ModelForm):
