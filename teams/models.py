@@ -2,6 +2,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.utils.text import slugify
 
+from managers.models import Manager
+
 
 class Team(models.Model):
     class TeamTypes(models.TextChoices):
@@ -12,6 +14,7 @@ class Team(models.Model):
     name = models.CharField(max_length=50, unique=True)
     team_type = models.CharField(max_length=30, choices=TeamTypes.choices)
     slug = models.SlugField(max_length=20, null=True, blank=True)
+    manager = models.OneToOneField(Manager, on_delete=models.SET_NULL, null=True, blank=True, related_name="team")
 
     class Meta:
         ordering = ("name",)
@@ -30,4 +33,3 @@ class Team(models.Model):
                 num += 1
             self.slug = slug
         super().save(*args, **kwargs)
-
