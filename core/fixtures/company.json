@@ -1,0 +1,32 @@
+[
+    {
+        "pk": 1,
+        "model": "companies.company",
+        "fields": {
+            "name": "Bank Finanse",
+            "slug": "bank-finanse",
+            "path": "/site/bank-finanse/",
+            "website": "https://bank-finanse.com"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "companies.company",
+        "fields": {
+            "name": "House Finder",
+            "slug": "house-finder",
+            "path": "/site/house-finder/",
+            "website": "https://house-finder.com"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "companies.company",
+        "fields": {
+            "name": "Test",
+            "slug": "test",
+            "path": "/test/",
+            "website": "https://test.com"
+        }
+    }
+]
