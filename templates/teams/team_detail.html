@@ -1,0 +1,80 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+
+{% block content %}
+
+<div class="model-container">
+    <div class="title">
+        <h1>Details: {{ team.team_type }} Team - {{ team.name }}</h1>
+    </div>
+    <div class="model-cont">
+        <div class="model-content-field">
+            <div class="model-cont-nav">
+                <div class="nav-cont">
+                    <a href="">Leads</a>
+                </div>
+                <div class="model-task-content-nt">
+                    <div class="model-element">
+                        <h3>Manager</h3>
+                    </div>
+                    <div class="model-element">
+                        <p><i class="fa-solid fa-user-tie"></i> {{ team.manager}}</p>
+                    </div>
+                    <div class="model-element">
+                        <p><i class="fa-solid fa-phone"></i> {{ team.manager.user.phone_number }}</p>
+                        <p><i class="fa-solid fa-envelope"></i> {{ team.manager.user.email }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="model-content">
+                <div class="model-element">
+                    <h3>Agents</h3>
+                </div>
+                <div class="m-content-table">
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th>Agent</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Companies</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for agent in team.agents.all %}
+                            
+                            <tr>
+                                <td><a href="{% url 'agents:agent-detail' agent.pk %}"><b>{{ agent.user.first_name }} {{ agent.user.last_name }} </b></a></td>
+                                <td><a href="{% url 'teams:agents:agent-detail' team.slug agent.pk %}"><b>{{ agent.user.first_name }} {{ agent.user.last_name }} </b></a></td>
+                                <td>{{ agent.user.email }}</td>
+                                <td>{{ agent.user.phone_number }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="model-action-cont">
+            <ul>
+                {% if user.is_superuser %}
+                <li>
+                    <a href="">
+                        <h3>Update Team</h3>
+                        <p class="det-icon"><i class="fa-solid fa-pen-to-square"></i></p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'teams:team-delete' team.slug %}">
+                        <h3>Delete Team</h3>
+                        <p class="det-icon"><i class="fa-solid fa-trash"></i></p>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
