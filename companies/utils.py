@@ -6,7 +6,7 @@ from leads.forms import CompanyLeadCreateForm
 from leads.models import LeadSubmission
 
 
-def company_lead_create(request: HttpRequest, template_name: str, succes_url: str) -> HttpResponse:
+def company_lead_create(request: HttpRequest, template_name: str, success_url: str) -> HttpResponse:
     if request.method == "POST":
         form = CompanyLeadCreateForm(request.POST)
         if form.is_valid():
@@ -20,7 +20,7 @@ def company_lead_create(request: HttpRequest, template_name: str, succes_url: st
             )
 
             messages.success(request, "Thank you for your message. We will contact you shortly.")
-            return redirect(succes_url)
+            return redirect(success_url)
     else:
         form = CompanyLeadCreateForm()
     return render(request, template_name, {"form": form})
