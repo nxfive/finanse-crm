@@ -59,7 +59,7 @@ class CompanyListView(LoginRequiredMixin, ListView):
         return context
     
 
-class CompanyCreateView(LoginRequiredMixin, CreateView):
+class CompanyCreateView(LoginRequiredMixin, AdminRequiredMixin, CreateView):
     template_name = "companies/company_create.html"
     form_class = CompanyCreateForm
     success_url = reverse_lazy("companies:company-list")
