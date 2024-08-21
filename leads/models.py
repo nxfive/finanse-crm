@@ -37,3 +37,11 @@ class Lead(models.Model):
 
     def __str__(self):
         return f"{self.first_name}: {self.phone_number}"
+
+
+class LeadSubmission(models.Model):
+    lead = models.OneToOneField(Lead, on_delete=models.CASCADE, related_name="submissions")
+    ip_address = models.GenericIPAddressField()
+    http_user_agent = models.CharField(max_length=100)
+    location = models.CharField(max_length=100, null=True, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
