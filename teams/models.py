@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.text import slugify
 
 from managers.models import Manager
+from companies.models import Company
 
 
 class Team(models.Model):
@@ -52,3 +53,9 @@ class Team(models.Model):
         if self.manager and self.manager.user == user:
             return True
         return self.agents.filter(user=user).exists()
+
+
+class TeamCompanyAssignment(models.Model):
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    leads_assignment = models.CharField(max_length=20, choices=Company.LeadAssignment.choices, default=Company.LeadAssignment.AUTO)
