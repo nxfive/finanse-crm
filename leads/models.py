@@ -43,6 +43,17 @@ class Lead(models.Model):
     def __str__(self):
         return f"{self.first_name}: {self.phone_number}"
 
+    def save(self, *args, **kwargs):
+        path = kwargs.pop("path", None)
+        if path:
+            try: 
+                self.company = Company.objects.get(path=path)
+            except Company.DoesNotExist:
+                self.company = Company.objects.get(name="Test")
+        else:
+            self.company = Company.objects.get(name="Test")
+        super().save(*args, **kwargs)
+
 
 class LeadSubmission(models.Model):
     lead = models.OneToOneField(Lead, on_delete=models.CASCADE, related_name="submissions")
