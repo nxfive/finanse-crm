@@ -1,0 +1,69 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="model-container">
+    <div class="title">
+        <h1>Team Update</h1>
+    </div>
+    <div class="model-cont">
+        <div class="model-content">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Name</p><p>{{ form.name }}</p>
+                    </div>
+                    <div class="as-icone-container">
+                        <p class="as-icone">Manager</p><p>{{ form.manager }}</p>
+                    </div>
+                </div>
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Type</p><p>{{ form.team_type }}</p>
+                    </div>
+                </div>
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Companies</p>
+                        {% for company in companies %}
+                        <div>
+                            <label for="company_{{ company.id }}">{{ company.name }}</label>
+                            <input type="checkbox" name="companies" value="{{ company.id }}" id="company_{{ company.id }}">
+                            <select name="leads_assignment_{{ company.id }}">
+                                <option value="auto">Auto</option>
+                                <option value="manual">Manual</option>
+                                <option value="disabled">Disabled</option>
+                            </select>
+                            <br><br>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="model-element-action">
+                    <a href="{% url 'teams:team-detail' team.slug %}"><i class="fa-solid fa-arrow-left"></i>Details</a>
+                    <button type="submit" class="btn-update-sub">Update</button>
+                </div>
+            </form>
+        </div>
+        <div class="model-action-cont">
+            <ul>
+                <li>
+                    <a href="{% url 'teams:team-detail' team.slug %}">
+                        <h3>Team Details</h3>
+                        <p class="det-icon"><i class="fa-solid fa-info"></i></p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'teams:team-delete' team.slug %}">
+                        <h3>Delete Team</h3>
+                        <p class="det-icon"><i class="fa-solid fa-trash"></i></p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
