@@ -8,5 +8,6 @@ urlpatterns = [
     path("agents/", include("agents.urls")),
     path("teams/", include("teams.urls")),
     path("managers/", include("managers.urls")),
-    path("site/", include("companies.websites_urls"))
+    path("site/", include("companies.websites_urls")),
+    path("companies/", include("companies.urls")),
 ]
