@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     "agents",
     "teams",
     "managers",
-    "companies"
+    "companies",
+    "core",
 ]
 
 MIDDLEWARE = [
@@ -70,6 +71,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "teams.context_processors.team",
                 "teams.context_processors.team_manager",
+                "companies.context_processors.companies_count",
             ],
         },
     },
