@@ -1,4 +1,5 @@
 {% extends "dashboard.html" %}
+{% load custom_filters %}
 {% load static %}
 
 
@@ -29,6 +30,17 @@
             </div>
             <div class="model-content">
                 <div class="model-element">
+                    <h3>Companies</h3>
+                </div>
+                {% for assignment in team.teamcompanyassignment_set.all %}
+                <div class="model-element">
+                    <p>Company: {{ assignment.company.name }}</p>
+                    <p>Leads Assignment: {{ assignment.get_leads_assignment_display }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="model-content">
+                <div class="model-element">
                     <h3>Agents</h3>
                 </div>
                 <div class="m-content-table">
@@ -49,6 +61,7 @@
                                 <td><a href="{% url 'teams:agents:agent-detail' team.slug agent.pk %}"><b>{{ agent.user.first_name }} {{ agent.user.last_name }} </b></a></td>
                                 <td>{{ agent.user.email }}</td>
                                 <td>{{ agent.user.phone_number }}</td>
+                                <td>{{ agent.companies.all|join_companies}}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
