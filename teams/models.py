@@ -36,3 +36,19 @@ class Team(models.Model):
         if not self.slug:
             self.slug = self.generate_slug()
         super().save(*args, **kwargs)
+
+    @property
+    def members(self) -> list:
+        members = list(self.agents.all())
+        if self.manager:
+            members.append(self.manager)
+        return members
+
+    @property
+    def members_count(self) -> int:
+        return len(self.members)
+    
+    def is_user_member(self, user) -> bool:
+        if self.manager and self.manager.user == user:
+            return True
+        return self.agents.filter(user=user).exists()
