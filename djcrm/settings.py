@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "agents",
     "teams",
     "managers",
+    "companies"
 ]
 
 MIDDLEWARE = [
