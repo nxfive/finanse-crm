@@ -4,10 +4,16 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Company(models.Model):
+    class LeadAssignment(models.TextChoices):
+        AUTO = "auto", _("Automatic")
+        MANUAL = "manual", _("Manual")
+        DISABLED = "disabled", _("Disabled")
+
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(max_length=50, null=True, blank=True)
     path = models.CharField(max_length=200, unique=True)
     website = models.URLField(unique=True)
+    lead_assignment = models.CharField(max_length=20, choices=LeadAssignment.choices, default=LeadAssignment.AUTO)
 
     class Meta:
         verbose_name_plural = _("Companies")
@@ -29,4 +35,3 @@ class Company(models.Model):
         if not self.slug:
             self.slug = self.generate_slug()
         super().save(*args, **kwargs)
-
