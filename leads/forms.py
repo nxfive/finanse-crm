@@ -30,6 +30,19 @@ class LeadUpdateForm(LeadUpdateAgentForm):
     """
         This form is intended for use by superuser and manager users only.
     """
-
     class Meta(LeadUpdateAgentForm.Meta):
         fields = LeadUpdateAgentForm.Meta.fields + ("agent",)
+
+
+class CompanyLeadCreateForm(forms.ModelForm):
+    """
+        This form is intended for users of the company's website."
+    """
+    class Meta:
+        model = Lead
+        fields = ("first_name", "phone_number", "product", "message",)
+        widgets = {
+            "first_name": forms.TextInput(attrs={"placeholder": "Enter your name"}),
+            "phone_number": forms.TextInput(attrs={"placeholder": "Enter your phone number"}),
+            "message": forms.Textarea(attrs={"placeholder": "Enter your message"}),
+        }
