@@ -2,6 +2,9 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from agents.models import Agent
+from teams.models import Team
+from companies.models import Company
+
 
 class Lead(models.Model):
     class FinancialProducts(models.TextChoices):
@@ -31,6 +34,8 @@ class Lead(models.Model):
     description = models.TextField(max_length=500)
     email = models.EmailField(unique=True, null=True, blank=True)
     agent = models.ForeignKey(Agent, on_delete=models.SET_NULL, null=True, blank=True)
+    team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True, blank=True)
+    company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True, blank=True, related_name="leads")
 
     class Meta:
         ordering = ("-created_at",)
