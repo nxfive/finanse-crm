@@ -1,5 +1,6 @@
 from typing import Any
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.base import Model as Model
 from django.db.models.query import QuerySet
@@ -12,7 +13,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DetailView, D
 
 from .utils import company_lead_create
 from .models import Company
-from .forms import CompanyForm
+from .forms import CompanyForm, CompanyAssignAgentsForm
 from teams.models import Team
 from leads.models import Lead
 from core.utils import paginate_queryset
@@ -159,3 +160,27 @@ class CompanyLeadsListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
         context["company"] = Company.objects.get(slug=self.kwargs["company_slug"])
         context["leads"] = paginate_queryset(request=self.request, queryset=self.get_queryset(), pages=self.paginate_by)
         return context
+
+
+@login_required
+def company_assign_agents(request: HttpRequest, company_slug: str) -> HttpResponse:
+    company = get_object_or_404(Company, slug=company_slug)
+
+    if request.method == "POST":
+        form = CompanyAssignAgentsForm(request.POST, company=company)
+        if form.is_valid():
+            agents = form.cleaned_data.get("agents")
+            for agent in agents:
+                agent.companies.add(company)
+            if agents.count() == 1:
+                messages.success(request, "Agent successfully asigned to the company")
+            else:
+                messages.success(request, "Agents successfully asigned to the company")
+            return redirect("companies:company-detail", company_slug=company_slug)
+    else:
+        if len(company.get_agents) == 0:
+            messages.info(request, "There are no agents available to assign to this company")
+            return redirect("companies:company-detail", company_slug=company_slug)
+        
+        form = CompanyAssignAgentsForm(company=company)
+    return render(request, "companies/company_assign_agent.html", context={"company": company, "form": form})
