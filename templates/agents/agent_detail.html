@@ -21,6 +21,15 @@
                     <p><i class="fa-solid fa-envelope"></i> {{ agent.user.email }}</p>
                     <p><i class="fa-solid fa-phone"></i> {{ agent.user.phone_number }}</p>
                 </div>
+                <div class="model-element">
+                    <p><i class="fa-solid fa-building"></i> 
+                        {% for company in agent.companies.all %}
+                            {{ company }}
+                        {% empty %}
+                            Not assigned
+                        {% endfor %}
+                    </p>
+                </div>
             </div>
             <div class="model-content">
                 <div class="model-element">
