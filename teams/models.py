@@ -16,6 +16,7 @@ class Team(models.Model):
     team_type = models.CharField(max_length=30, choices=TeamTypes.choices)
     slug = models.SlugField(max_length=20, null=True, blank=True)
     manager = models.OneToOneField(Manager, on_delete=models.SET_NULL, null=True, blank=True, related_name="team")
+    companies = models.ManyToManyField(Company, through="TeamCompanyAssignment", related_name="teams_assign")
 
     class Meta:
         ordering = ("name",)
