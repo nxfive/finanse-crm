@@ -75,7 +75,7 @@ class TeamUpdateView(LoginRequiredMixin, AdminRequiredMixin, UpdateView):
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context["companies"] = Company.objects.filter(leads_assignment__in=[Company.LeadAssignment.AUTO, Company.LeadAssignment.MANUAL])
+        context["companies"] = Company.objects.filter(lead_assignment__in=[Company.LeadAssignment.AUTO, Company.LeadAssignment.MANUAL])
         return context
     
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
@@ -98,3 +98,6 @@ class TeamUpdateView(LoginRequiredMixin, AdminRequiredMixin, UpdateView):
             assignment.save()
         messages.success(self.request, "Team successfully updated.")
         return super().form_valid(form)
+    
+    def get_success_url(self) -> str:
+        return reverse_lazy("teams:team-detail", kwargs={"team_slug": self.kwargs["team_slug"]})
