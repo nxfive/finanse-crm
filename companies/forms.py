@@ -109,3 +109,25 @@ class CompanyAssignTeamsForm(forms.Form):
             self.fields["teams"].choices = Team.objects.exclude(id__in=assigned_teams_ids)
         else:
             self.fields["teams"].choices = []
+
+
+class CompanyAssignTeamsForm(forms.Form):
+    """
+        Form for unassigning teams to a specific Company.
+
+        This form allows admin users to unassign teams from a selected Company.
+    """
+    teams = forms.ModelMultipleChoiceField(
+        queryset=Team.objects.all(),
+        widget=forms.SelectMultiple,
+        required=True,
+        label="Select Teams",
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.company = kwargs.pop("company", None)
+        if self.company:
+            assigned_teams_ids = self.company.teams_assign.values_list("id", flat=True)
+            self.fields["teams"].choices = Team.objects.filter(id__in=assigned_teams_ids)
+        else:
+            self.fields["teams"].choices = []
