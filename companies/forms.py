@@ -2,6 +2,7 @@ from django import forms
 
 from .models import Company
 from agents.models import Agent
+from teams.models import Team
 
 
 class CompanyForm(forms.ModelForm):
@@ -35,7 +36,7 @@ class CompanyAssignAgentsForm(forms.Form):
         for selection.
     """
 
-    agents = forms.MultipleChoiceField(
+    agents = forms.ModelMultipleChoiceField(
         queryset=Agent.objects.all(),
         widget=forms.SelectMultiple,
         required=True,
@@ -69,7 +70,7 @@ class CompanyUnassignAgentsForm(forms.Form):
         the Company and who are individually assigned, will be available
         for unassignment.
     """
-    agents = forms.MultipleChoiceField(
+    agents = forms.ModelMultipleChoiceField(
         queryset=Agent.objects.all(),
         widget=forms.SelectMultiple,
         required=True,
@@ -86,3 +87,25 @@ class CompanyUnassignAgentsForm(forms.Form):
             agents_assign_to_company = agents_team_in_company.filter(companies=self.company)
             return [(agent.pk, f"{agent.team} - {agent}") for agent in agents_assign_to_company]
         return []
+
+
+class CompanyAssignTeamsForm(forms.Form):
+    """
+        Form for assigning teams to a specific Company.
+
+        This form allows admin users to assign teams to a selected Company.
+    """
+    teams = forms.ModelMultipleChoiceField(
+        queryset=Team.objects.all(),
+        widget=forms.SelectMultiple,
+        required=True,
+        label="Select Teams",
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.company = kwargs.pop("company", None)
+        if self.company:
+            assigned_teams_ids = self.company.teams_assign.values_list("id", flat=True)
+            self.fields["teams"].choices = Team.objects.exclude(id__in=assigned_teams_ids)
+        else:
+            self.fields["teams"].choices = []
