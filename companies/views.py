@@ -13,7 +13,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DetailView, D
 
 from .utils import company_lead_create
 from .models import Company
-from .forms import CompanyForm, CompanyAssignAgentsForm, CompanyUnassignAgentsForm, CompanyAssignTeamsForm
+from .forms import CompanyForm, CompanyAssignAgentsForm, CompanyUnassignAgentsForm, CompanyAssignTeamsForm, CompanyUnassignTeamsForm
 from teams.models import Team
 from leads.models import Lead
 from core.utils import paginate_queryset
@@ -232,3 +232,27 @@ def company_assign_teams(request: HttpRequest, company_slug: str) -> HttpRespons
         
         form = CompanyAssignTeamsForm(company=company)
     return render(request, "companies/company_assign_team.html", context={"company": company, "form": form})
+
+
+@login_required
+def company_unassign_teams(request: HttpRequest, company_slug: str) -> HttpResponse:
+    company = get_object_or_404(Company, slug=company_slug)
+
+    if request.method == "POST":
+        form = CompanyUnassignTeamsForm(request.POST, company=company)
+        if form.is_valid():
+            teams = form.cleaned_data.get("teams")
+            for team in teams:
+                team.companies.remove(company)
+            if teams.count() == 1:
+                messages.success(request, "Team successfully unasigned from the company.")
+            else:
+                messages.success(request, "Teams successfully unasigned from the company.")
+            return redirect("companies:company-detail", company_slug=company_slug)
+    else:
+        if len(company.get_teams) == 0:
+            messages.info(request, "This company has no assigned teams.")
+            return redirect("companies:company-detail", company_slug=company_slug)
+        
+        form = CompanyUnassignTeamsForm(company=company)
+    return render(request, "companies/company_unassign_team.html", context={"company": company, "form": form})
