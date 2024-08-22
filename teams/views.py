@@ -1,12 +1,13 @@
 from typing import Any
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.base import Model as Model
 from django.db.models.query import QuerySet
 from django.forms import BaseModelForm
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse_lazy
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, UpdateView, CreateView, DetailView, DeleteView
 
 from .models import Team, TeamCompanyAssignment
@@ -101,3 +102,34 @@ class TeamUpdateView(LoginRequiredMixin, AdminRequiredMixin, UpdateView):
     
     def get_success_url(self) -> str:
         return reverse_lazy("teams:team-detail", kwargs={"team_slug": self.kwargs["team_slug"]})
+
+
+@login_required
+def update_team_companies(request: HttpRequest, team_slug: str) -> HttpResponse:
+    team = get_object_or_404(Team, slug=team_slug)
+
+    if team.manager.user != request.user:
+        messages.error(request, "You are not authorized to update this team's companies.")
+        return redirect("teams:team-list")
+    
+    if request.method == "POST":
+        companies = request.POST.getlist("companies")
+
+        for company_id in companies:
+            leads_assignment = request.POST.get(f"leads_assignment_{company_id}")
+            if leads_assignment == "auto":
+                leads_assignment = Company.LeadAssignment.AUTO
+            elif leads_assignment == "manual":
+                leads_assignment = Company.LeadAssignment.MANUAL
+            elif leads_assignment == "disabled":
+                leads_assignment = Company.LeadAssignment.DISABLED
+
+            assignment = TeamCompanyAssignment.objects.get(
+                team=team, company=Company.objects.get(id=company_id)
+            )
+            assignment.leads_assignment = leads_assignment
+            assignment.save()
+        return redirect(reverse("teams:team-detail", kwargs={"team_slug": team_slug}))
+    
+    companies = team.companies.all()
+    return render(request, "teams/team_companies_update.html", context={"companies": companies})
