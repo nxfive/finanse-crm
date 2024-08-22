@@ -12,8 +12,9 @@ from django.views.generic import ListView, CreateView, UpdateView, DetailView, D
 
 from .utils import company_lead_create
 from .models import Company
-from .forms import CompanyCreateForm
+from .forms import CompanyForm
 from teams.models import Team
+from leads.models import Lead
 from core.utils import paginate_queryset
 from core.mixins import AdminRequiredMixin
 from core.decorators import check_user_team
@@ -61,7 +62,7 @@ class CompanyListView(LoginRequiredMixin, ListView):
 
 class CompanyCreateView(LoginRequiredMixin, AdminRequiredMixin, CreateView):
     template_name = "companies/company_create.html"
-    form_class = CompanyCreateForm
+    form_class = CompanyForm
     success_url = reverse_lazy("companies:company-list")
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
@@ -90,7 +91,7 @@ class CompanyDetailView(LoginRequiredMixin, DetailView):
 class CompanyUpdateView(LoginRequiredMixin, AdminRequiredMixin, UpdateView):
     template_name = "companies/company_update.html"
     context_object_name = "company"
-    form_class = CompanyCreateForm
+    form_class = CompanyForm
 
     def get_object(self, queryset: QuerySet[Any] | None = ...) -> Model:
         return get_object_or_404(Company, slug=self.kwargs.get("company_slug"))
@@ -122,3 +123,39 @@ class CompanyDeleteView(LoginRequiredMixin, AdminRequiredMixin, DeleteView):
             messages.error(request, "Company does not exist.")
             return redirect("companies:company-list")
         return super().dispatch(request, *args, **kwargs)
+
+
+class CompanyTeamsListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
+    template_name = "companies/company_teams_list.html"
+    context_object_name = "teams"
+    paginate_by = 8
+
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        self.object = get_object_or_404(Company, slug=kwargs.get("company_slug"))
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_queryset(self) -> QuerySet[Any]:
+        return self.object.teams_assign.all()
+    
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["company"] = self.object
+        context["teams"] = paginate_queryset(request=self.request, queryset=self.get_queryset(), pages=self.paginate_by)
+        return context
+    
+
+class CompanyLeadsListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
+    template_name = "companies/company_leads_list.html"
+    context_object_name = "leads"
+    slug_field = "slug"
+    slug_url_kwarg = "company_slug"
+    paginate_by = 8
+
+    def get_queryset(self) -> QuerySet[Any]:
+        return Lead.objects.filter(company__slug=self.kwargs["company_slug"]).all()
+    
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["company"] = Company.objects.get(slug=self.kwargs["company_slug"])
+        context["leads"] = paginate_queryset(request=self.request, queryset=self.get_queryset(), pages=self.paginate_by)
+        return context
