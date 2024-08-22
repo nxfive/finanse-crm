@@ -6,7 +6,7 @@ from agents.models import Agent
 
 class CompanyForm(forms.ModelForm):
     """
-    Form for create and update Company model.
+        Form for create and update Company model.
     """
 
     class Meta:
@@ -26,13 +26,13 @@ class CompanyForm(forms.ModelForm):
 
 class CompanyAssignAgentsForm(forms.Form):
     """
-    Form for assigning agents to a specific Company.
+        Form for assigning agents to a specific Company.
 
-    This form allows admin users to assign agents to a selected Company.
-    The agents available for assignment are filtered based on their team
-    association with the Company. Agents whose teams are already linked to
-    the Company, but who are not individually assigned yet, will be available
-    for selection.
+        This form allows admin users to assign agents to a selected Company.
+        The agents available for assignment are filtered based on their team
+        association with the Company. Agents whose teams are already linked to
+        the Company, but who are not individually assigned yet, will be available
+        for selection.
     """
 
     agents = forms.MultipleChoiceField(
