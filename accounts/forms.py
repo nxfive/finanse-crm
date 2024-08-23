@@ -1,47 +1,80 @@
 from typing import Any
 from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from django.core.exceptions import ValidationError
+
 from .models import Account
+from core.validators import (
+    validate_phone_number,
+    validate_birth_date,
+    validate_passwords,
+)
 
 
-class AccountCreateForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput(attrs={"placeholder": "Password"}))
-    confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={"placeholder": "Confirm Password"}))
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["first_name"].widget.attrs["placeholder"] = "Enter first name"
-        self.fields["last_name"].widget.attrs["placeholder"] = "Enter last name"
-        self.fields["phone_number"].widget.attrs["placeholder"] = "Enter phone number"
-        self.fields["email"].widget.attrs["placeholder"] = "Enter email"
+class AccountBaseForm(forms.ModelForm):
+    class Meta:
+        model = Account
+        fields = (
+            "first_name",
+            "last_name",
+            "username",
+            "phone_number",
+            "email",
+            "birth_date",
+            "password",
+        )
+        widgets = {
+            "first_name": forms.TextInput(attrs={"placeholder": "First Name"}),
+            "last_name": forms.TextInput(attrs={"placeholder": "First Name"}),
+            "username": forms.TextInput(attrs={"placeholder": "First Name"}),
+            "phone_number": forms.TextInput(attrs={"placeholder": "First Name"}),
+            "email": forms.EmailInput(attrs={"placeholder": "Email"}),
+            "birth_date": forms.DateInput(attrs={"placeholder": "yyyy-mm-dd"}),
+        }
 
     def clean(self) -> dict[str, Any]:
-        password = self.cleaned_data.get("password")
-        confirm_password = self.cleaned_data.get("confirm_password")
+        validate_birth_date(self.cleaned_data.get("birth_date"))
+        validate_phone_number(self.cleaned_data.get("phone_number"))
 
-        if password and confirm_password and password != confirm_password:
-            raise ValidationError({
-                "password": "Passwords do not match"
-            })
         return super().clean()
-    
+
+
+class AccountCreateForm(AccountBaseForm):
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={"placeholder": "Password"})
+    )
+    confirm_password = forms.CharField(
+        widget=forms.PasswordInput(attrs={"placeholder": "Confirm Password"})
+    )
+
+    def clean(self) -> dict[str, Any]:
+        validate_passwords(
+            self.cleaned_data.get("password"), self.cleaned_data.get("confirm_password")
+        )
+
+        return super().clean()
+
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.set_password(self.cleaned_data["password"])
+        user.set_password(self.cleaned_data.get("password"))
         if commit:
             user.save()
         return user
-                                       
 
-class AccountUpdateForm(forms.ModelForm):
+
+class AccountUpdateForm(AccountBaseForm):
     password = ReadOnlyPasswordHashField()
 
     class Meta:
         model = Account
-        fields = ("email", "password", "phone_number", "is_active", "is_staff", "is_superuser",)
+        fields = AccountBaseForm.Meta.fields + (
+            "is_active",
+            "is_staff",
+            "is_superuser",
+        )
 
 
 class LoginForm(forms.Form):
     email = forms.EmailField(widget=forms.EmailInput(attrs={"placeholder": "Email"}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={"placeholder": "Password"}))
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={"placeholder": "Password"})
+    )
