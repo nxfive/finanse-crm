@@ -13,4 +13,5 @@ urlpatterns = [
 
     path("<slug:team_slug>/agents/", include("agents.urls", namespace="agents")),
     path("<slug:team_slug>/leads/", include("leads.urls", namespace="leads")),
+    path("<slug:team_slug>/companies/", include("companies.urls", namespace="companies"))
 ]
