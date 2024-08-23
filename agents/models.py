@@ -11,7 +11,6 @@ class Agent(models.Model):
         SUPPORT = "Sales Support Agent", _("Sales Suport Agent")
     
     user = models.OneToOneField(Account, on_delete=models.CASCADE)
-    birth_date = models.DateField()
     role = models.CharField(max_length=30, choices=Roles.choices)
     team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True, blank=True, related_name="agents")
 
