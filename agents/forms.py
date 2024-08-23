@@ -6,7 +6,7 @@ from core.forms import BaseUserForm, Agent
 class AgentCreateForm(BaseUserForm):
     class Meta:
         model = Agent
-        fields = BaseUserForm.Meta.fields + ("birth_date", "role",)
+        fields = BaseUserForm.Meta.fields + ("birth_date", "role", "team")
         widgets = {
             "birth_date": forms.DateInput(attrs={"type":"date"})
         }
