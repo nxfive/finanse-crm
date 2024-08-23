@@ -17,7 +17,7 @@ def check_user_team(function: Callable[..., HttpResponse]) -> Callable[..., Http
         if team_slug:
             try:
                 team = Team.objects.get(slug=team_slug)
-                if any(member.user == request.user for member in team.members.all()):
+                if any(member.user == request.user for member in team.members):
                     return function(request, *args, **kwargs, team=team)
             except Team.DoesNotExist:
                 return redirect("/")
