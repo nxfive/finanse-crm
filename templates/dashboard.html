@@ -14,11 +14,25 @@
         <nav class="navbar-dash">
             <h1 class="logo-dash">Finanse<span>CRM</span></h1>
             <div class="nav-menu-items">
+                {% if user.is_superuser %}
                 <div class="nav-items-title">
-                    <a href="{% url 'account-list' %}">Accounts <i class="fa-solid fa-angle-right"></i></a>
+                    <a href="{% url 'account-list' %}">Users <i class="fa-solid fa-angle-right"></i></a>
                 </div>
+                {% endif %}
                 <div class="nav-items-title">
                     <a href="{% url 'leads:lead-list' %}">Leads <i class="fa-solid fa-angle-right"></i></a>
+                </div>
+                <div class="nav-items-title">
+                    <a href="{% url 'agents:agent-list' %}">Agents <i class="fa-solid fa-angle-right"></i></a>
+                </div>
+                <div class="nav-items-title">
+                    <a href="{% url 'managers:manager-list' %}">Managers <i class="fa-solid fa-angle-right"></i></a>
+                </div>
+                <div class="nav-items-title">
+                    <a href="{% url 'teams:team-list' %}">Teams <i class="fa-solid fa-angle-right"></i></a>
+                </div>
+                <div class="nav-items-title">
+                    <a href="{% url 'companies:company-list' %}">Companies <i class="fa-solid fa-angle-right"></i></a>
                 </div>
             </div>
             <div class="nav-logout">
@@ -45,7 +59,7 @@
                 <li>
                     <div>
                         <h3>Total Companies</h3>
-                        <h2>4</h2>
+                        <h2>{{ companies_count }}</h2>
                     </div>
                     <i class="fa-solid fa-people-group"></i>
                 </li>
