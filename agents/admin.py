@@ -11,7 +11,6 @@ class AgentAdmin(BaseUserAdmin):
 
     list_display = BaseUserAdmin.list_display + (
         "role",
-        "birth_date",
         "team",
     )
 
