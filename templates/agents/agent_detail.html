@@ -16,6 +16,13 @@
                 </div>
                 <div class="model-element">
                     <p><i class="fa-solid fa-user-tie"></i> {{ agent.role }}</p>
+                    <p><i class="fa-solid fa-people-group"></i>
+                        {% if agent.team %}
+                        {{ agent.team }}
+                        {% else %}
+                        Not assigned
+                        {% endif %}
+                    </p>
                 </div>
                 <div class="model-element">
                     <p><i class="fa-solid fa-envelope"></i> {{ agent.user.email }}</p>
