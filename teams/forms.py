@@ -1,4 +1,6 @@
 from django import forms
+from django.db.models import Q
+from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 from .models import Team
@@ -18,5 +20,25 @@ class TeamForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
         self.fields["manager"].empty_label = _("Select Manager")
-        self.fields["manager"].queryset = Manager.objects.filter(team__isnull=True)
+
+        if self.instance and self.instance.pk:
+            self.fields["manager"].initial = self.instance.manager
+            self.fields["manager"].queryset = Manager.objects.filter(
+                Q(team__isnull=True) | Q(team=self.instance)
+            )
+        else:
+            self.fields["manager"].queryset = Manager.objects.filter(team__isnull=True)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        team_type = cleaned_data.get("team_type")
+        instance = self.instance
+
+        if instance.pk:
+            original_team = Team.objects.get(pk=instance.pk)
+            if original_team.agents.exists() and original_team.team_type != team_type:
+                raise ValidationError("Cannot change 'team type' when team already has agents.")
+
+        return cleaned_data
