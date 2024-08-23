@@ -1,6 +1,13 @@
+from datetime import date
 from typing import Any
 from django.core.paginator import EmptyPage, InvalidPage, PageNotAnInteger, Paginator
 from django.http import HttpRequest
+
+
+def calculate_age(birth_date):
+    today = date.today()
+    age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
+    return age
 
 
 def paginate_queryset(request: HttpRequest, queryset: Any, pages: int) -> Any:
