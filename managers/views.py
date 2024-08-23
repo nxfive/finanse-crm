@@ -15,11 +15,26 @@ class ManagerDeleteView(DeleteView):
     model = Manager
     template_name = "managers/manager_delete.html"
 
+    def form_valid(self, form):
+        user = form.instance.user
+        user.is_manager = False
+        user.save()
+        return super().form_valid(form)
+
+
 
 class ManagerCreateView(CreateView):
     form_class = ManagerForm
     template_name = "managers/manager_create.html"
     success_url = reverse_lazy("managers:manager-list")
+
+
+    def form_valid(self, form):
+        user = form.instance.user
+        user.is_manager = True
+        user.save()
+        return super().form_valid(form)
+
 
 class ManagerDetailView(DetailView):
     model = Manager
