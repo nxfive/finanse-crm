@@ -1,11 +1,11 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
-
 from .models import Account
 from .forms import AccountUpdateForm, AccountCreateForm
 
 
-class AccountAdmin(admin.ModelAdmin):
+class AccountAdmin(BaseUserAdmin):
     form = AccountUpdateForm
     add_form = AccountCreateForm
 
@@ -20,7 +20,7 @@ class AccountAdmin(admin.ModelAdmin):
         "is_active",
         "date_joined",
     )
-    list_filter = ("is_superuser",)
+    list_filter = ("is_superuser", "is_manager")
     list_display_links = (
         "first_name",
         "last_name",
@@ -29,12 +29,13 @@ class AccountAdmin(admin.ModelAdmin):
     readonly_fields = (
         "last_login",
         "date_joined",
+        "is_manager",
     )
 
     fieldsets = (
         (None, {"fields": ("username", "email", "password")}),
-        ("Personal info", {"fields": ("first_name", "last_name", "phone_number")}),
-        ("Permissions", {"fields": ("is_staff", "is_active", "is_superuser")}),
+        ("Personal info", {"fields": ("first_name", "last_name", "phone_number", "birth_date")}),
+        ("Permissions", {"fields": ("is_staff", "is_active", "is_superuser", "is_manager")}),
     )
 
     add_fieldsets = (
@@ -48,6 +49,7 @@ class AccountAdmin(admin.ModelAdmin):
                     "username",
                     "email",
                     "phone_number",
+                    "birth_date",
                     "password",
                     "confirm_password",
                 ),
