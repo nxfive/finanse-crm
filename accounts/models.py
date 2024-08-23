@@ -3,7 +3,7 @@ from django.db import models
 
 
 class AccountManager(BaseUserManager):
-    def create_user(self, first_name, last_name, username, email, password=None):
+    def create_user(self, first_name, last_name, username, email, birth_date, password=None):
         if not email:
             raise ValueError("User must have an email address")
         
@@ -15,6 +15,8 @@ class AccountManager(BaseUserManager):
             last_name=last_name,
             username=username,
             email=self.normalize_email(email),
+            birth_date=birth_date,
+            is_manager=False,
         )
 
         user.set_password(password)
@@ -43,9 +45,11 @@ class Account(AbstractBaseUser):
     username = models.CharField(max_length=50, unique=True)
     email = models.EmailField(max_length=100, unique=True)
     phone_number = models.CharField(max_length=50, null=True, blank=True)
+    birth_date = models.DateField()
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now=True)
 
+    is_manager = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
