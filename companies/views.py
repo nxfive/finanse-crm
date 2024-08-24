@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -196,7 +196,9 @@ class CompanyLeadsListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
 
 
 @login_required
-def company_assign_agents(request: HttpRequest, team_slug: str | None, company_slug: str) -> HttpResponse:
+def company_assign_agents(
+    request: HttpRequest, company_slug: str, team_slug: Optional[str] = None
+) -> HttpResponse:
     if request.user.is_superuser:
         return assign_to_company(
             request,
@@ -210,7 +212,9 @@ def company_assign_agents(request: HttpRequest, team_slug: str | None, company_s
 
 
 @login_required
-def company_assign_teams(request: HttpRequest, team_slug: str | None, company_slug: str) -> HttpResponse:
+def company_assign_teams(
+    request: HttpRequest, company_slug: str, team_slug: Optional[str] = None
+) -> HttpResponse:
     if request.user.is_superuser:
         return assign_to_company(
             request,
@@ -224,7 +228,9 @@ def company_assign_teams(request: HttpRequest, team_slug: str | None, company_sl
 
 
 @login_required
-def company_unassign_teams(request: HttpRequest, team_slug: str | None, company_slug: str) -> HttpResponse:
+def company_unassign_teams(
+    request: HttpRequest, company_slug: str, team_slug: Optional[str] = None
+) -> HttpResponse:
     if request.user.is_superuser:
         return unassign_from_company(
             request,
@@ -238,7 +244,9 @@ def company_unassign_teams(request: HttpRequest, team_slug: str | None, company_
 
 
 @login_required
-def company_unassign_agents(request: HttpRequest, team_slug: str | None, company_slug: str) -> HttpResponse:
+def company_unassign_agents(
+    request: HttpRequest, company_slug: str, team_slug: Optional[str] = None
+) -> HttpResponse:
     if request.user.is_superuser:
         return unassign_from_company(
             request,
