@@ -1,0 +1,92 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="model-container">
+    <div class="title">
+        <h1>Company Details</h1>
+    </div>
+    {% include "alerts.html" %}
+    <div class="model-cont">
+        <div class="model-content-field">
+            <div class="model-cont-nav">
+                <div class="nav-cont">
+                    {% if user.is_superuser %}
+                    <a href="{% url 'companies:company-leads' company.slug %}">Leads</a>
+                    <a href="{% url 'companies:company-teams' company.slug %}">Teams</a>
+                    {% endif %}
+                </div>
+                <div class="model-task-content-nt">
+                    <div class="model-element">
+                        <p><b>Company: {{ company.name }}</b></p>
+                    </div>
+                    <div class="model-element">
+                        <div class="as-icone-container">
+                            <p class="as-icone">Path</p><p> {{ company.path }}</p>
+                        </div>
+                        <div class="as-icone-container">
+                            <p class="as-icone">Website</p><p> {{ company.website }}</p>
+                        </div>
+                    </div>
+                    <div class="model-element">
+                        <div class="as-icone-container">
+                            <p class="as-icone">Leads Assignment</p><p> {{ company.leads_assignment }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="model-action-cont">
+            <ul>
+                {% if user.is_superuser %}
+                <li>
+                    <a href="{% url 'companies:company-teams-assign' company.slug %}" id="team-assign">
+                        <h3>Assign Team</h3>
+                        <p class="det-icon"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-people-group"></i></p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'companies:company-teams-unassign' company.slug %}">
+                        <h3>Unassign Team</h3>
+                        <p class="det-icon"><i class="fa-solid fa-minus"></i><i class="fa-solid fa-people-group"></i></p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'companies:company-agents-assign' company.slug %}">                    
+                        <h3>Assign Agent</h3>
+                        <p class="det-icon"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-user-tie"></i></p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'companies:company-agents-unassign' company.slug %}">                    
+                        <h3>Unassign Agent</h3>
+                        <p class="det-icon"><i class="fa-solid fa-minus"></i><i class="fa-solid fa-user-tie"></i></p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'companies:company-update' company.slug %}">
+                        <h3>Update Company</h3>
+                        <p class="det-icon"><i class="fa-solid fa-pen-to-square"></i></p>
+                    </a>
+                </li>
+                <li>
+                    <a href="">
+                        <h3>Delete Company</h3>
+                        <p class="det-icon"><i class="fa-solid fa-trash"></i></p>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+            <div class="model-del-cont">
+                <h3>Are you sure you want to delete this company?</h3>
+                <form method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-delete-sub">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
