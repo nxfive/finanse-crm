@@ -61,10 +61,6 @@ def process_companies(
                     request, f"Companies successfully {operation}ed to the agent."
                 )
                 return redirect("teams:agents:agent-detail", team_slug=team_slug, pk=pk)
-
-        messages.success(request, f"Companies successfully {operation}ed to the agent.")
-        return redirect("teams:agents:agent-detail", team_slug=team_slug, pk=pk)
-
     else:
         form = form_class(instance=agent, team=team)
         response = check_companies_to_process(request, team, agent, operation)
