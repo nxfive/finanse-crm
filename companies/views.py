@@ -196,7 +196,7 @@ class CompanyLeadsListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
 
 
 @login_required
-def company_assign_agents(request: HttpRequest, company_slug: str) -> HttpResponse:
+def company_assign_agents(request: HttpRequest, team_slug: str | None, company_slug: str) -> HttpResponse:
     if request.user.is_superuser:
         return assign_to_company(
             request,
@@ -210,7 +210,7 @@ def company_assign_agents(request: HttpRequest, company_slug: str) -> HttpRespon
 
 
 @login_required
-def company_assign_teams(request: HttpRequest, company_slug: str) -> HttpResponse:
+def company_assign_teams(request: HttpRequest, team_slug: str | None, company_slug: str) -> HttpResponse:
     if request.user.is_superuser:
         return assign_to_company(
             request,
@@ -224,7 +224,7 @@ def company_assign_teams(request: HttpRequest, company_slug: str) -> HttpRespons
 
 
 @login_required
-def company_unassign_teams(request: HttpRequest, company_slug: str) -> HttpResponse:
+def company_unassign_teams(request: HttpRequest, team_slug: str | None, company_slug: str) -> HttpResponse:
     if request.user.is_superuser:
         return unassign_from_company(
             request,
@@ -238,7 +238,7 @@ def company_unassign_teams(request: HttpRequest, company_slug: str) -> HttpRespo
 
 
 @login_required
-def company_unassign_agents(request: HttpRequest, company_slug: str) -> HttpResponse:
+def company_unassign_agents(request: HttpRequest, team_slug: str | None, company_slug: str) -> HttpResponse:
     if request.user.is_superuser:
         return unassign_from_company(
             request,
