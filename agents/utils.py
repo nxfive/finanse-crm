@@ -1,3 +1,4 @@
+from typing import Tuple
 from django.forms import Form
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponseRedirect
@@ -25,6 +26,22 @@ def check_companies_to_process(
         return redirect("teams:agents:agent-detail", team.slug, agent.pk)
 
 
+def validate_team_and_agent(request: HttpRequest, team_slug: str, agent_pk: int) -> Tuple[Team, Agent] | HttpResponseRedirect:
+    team = get_object_or_404(Team, slug=team_slug)
+
+    if team.manager.user != request.user:
+        messages.error(request, "You are not a manager of this team.")
+        return redirect("agents:agent-list")
+
+    agent = get_object_or_404(Agent, pk=agent_pk)
+
+    if agent not in team.agents.all():
+        messages.error(request, "This agent is not assigned to your team.")
+        return redirect("agents:agent-list")
+    
+    return team, agent
+
+
 def process_companies(
     request: HttpRequest,
     team_slug: str,
@@ -33,17 +50,13 @@ def process_companies(
     operation: str,
     template_name: str,
 ) -> HttpResponseRedirect:
-    team = get_object_or_404(Team, slug=team_slug)
 
-    if team.manager.user != request.user:
-        messages.error(request, "You are not a manager of this team.")
-        return redirect("agents:agent-list")
+    result = validate_team_and_agent(request, team_slug, pk)
 
-    agent = get_object_or_404(Agent, pk=pk)
+    if isinstance(result, HttpResponseRedirect):
+        return result
 
-    if agent not in team.agents.all():
-        messages.error(request, "This agent is not assigned to your team.")
-        return redirect("agents:agent-list")
+    team, agent = result
 
     if request.method == "POST":
         form = form_class(request.POST, instance=agent, team=team)
@@ -58,7 +71,7 @@ def process_companies(
             if operation_func:
                 operation_func(*companies)
                 messages.success(
-                    request, f"Companies successfully {operation}ed to the agent."
+                    request, f"Companies successfully {operation}ed."
                 )
                 return redirect("teams:agents:agent-detail", team_slug=team_slug, pk=pk)
     else:
