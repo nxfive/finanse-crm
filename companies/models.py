@@ -13,7 +13,7 @@ class Company(models.Model):
     slug = models.SlugField(max_length=50, null=True, blank=True)
     path = models.CharField(max_length=200, unique=True)
     website = models.URLField(unique=True)
-    lead_assignment = models.CharField(max_length=20, choices=LeadAssignment.choices, default=LeadAssignment.AUTO)
+    leads_assignment = models.CharField(max_length=20, choices=LeadAssignment.choices, default=LeadAssignment.AUTO)
 
     class Meta:
         verbose_name_plural = _("Companies")
