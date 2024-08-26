@@ -13,5 +13,5 @@ urlpatterns = [
     path("my-leads/", LeadListView.as_view(agent=True), name="my-lead-list"),
     path("my-leads/<int:pk>/", LeadDetailView.as_view(agent=True), name="my-lead-detail"),
     path("my-leads/<int:pk>/update/", LeadUpdateView.as_view(agent=True), name="my-lead-update"),
-    path("my-leads/<int:pk>/delete/", LeadUpdateView.as_view(agent=True), name="my-lead-update"),
+    path("my-leads/<int:pk>/delete/", LeadDeleteView.as_view(agent=True), name="my-lead-delete"),
 ]
