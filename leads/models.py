@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from agents.models import Agent
 from teams.models import Team
 from companies.models import Company
+from core.validators import validate_name, validate_phone_number, validate_team_agent
 
 
 class Lead(models.Model):
@@ -25,7 +26,7 @@ class Lead(models.Model):
         CLOSED = "Closed", _("Closed")
 
     first_name = models.CharField(max_length=25)
-    phone_number = models.CharField(max_length=25)
+    phone_number = models.CharField(max_length=15)
     product = models.CharField(max_length=25, choices=FinancialProducts.choices)
     message = models.TextField(max_length=500, null=True, blank=True)
     status = models.CharField(max_length=15, choices=LeadStatus.choices, default=LeadStatus.NEW)
@@ -42,6 +43,12 @@ class Lead(models.Model):
 
     def __str__(self):
         return f"{self.first_name}: {self.phone_number}"
+
+    def clean(self) -> None:
+        validate_name(self.first_name)
+        validate_phone_number(self.phone_number)
+        validate_team_agent(self.team, self.agent)
+        return super().clean()
 
     def save(self, *args, **kwargs):
         path = kwargs.pop("path", None)
