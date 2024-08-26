@@ -1,5 +1,6 @@
 from typing import Any
 from django.db.models.query import QuerySet
+from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.forms.models import BaseModelForm
@@ -16,6 +17,7 @@ from django.views.generic import (
 )
 from .forms import LeadAdminForm, LeadCreateManagerForm, LeadUpdateForm
 from .models import Lead
+from .mixins import AccessControlMixin
 from core.utils import paginate_queryset
 from core.decorators import check_user_team
 
@@ -61,6 +63,12 @@ class LeadCreateView(LoginRequiredMixin, CreateView):
     @method_decorator(check_user_team)
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         self.team = kwargs.pop("team", None)
+
+        if not request.user.is_superuser:
+            if self.team and self.team.manager.user != request.user:
+                raise PermissionDenied("You do not have permission to access this resource.")
+            raise PermissionDenied("You do not have permission to access this resource.")
+
         return super().dispatch(request, *args, **kwargs)
 
     def get_form_class(self) -> BaseModelForm:
@@ -82,8 +90,7 @@ class LeadCreateView(LoginRequiredMixin, CreateView):
         return reverse_lazy("teams:leads:lead-list", kwargs={"team_slug": self.team.slug})
 
 
-
-class LeadUpdateView(LoginRequiredMixin, UpdateView):
+class LeadUpdateView(LoginRequiredMixin, AccessControlMixin, UpdateView):
     model = Lead
     form_class = LeadUpdateForm
     template_name = "leads/lead_update.html"
@@ -98,14 +105,14 @@ class LeadUpdateView(LoginRequiredMixin, UpdateView):
         return kwargs
 
 
-class LeadDetailView(LoginRequiredMixin, DetailView):
+class LeadDetailView(LoginRequiredMixin, AccessControlMixin, DetailView):
     model = Lead
     template_name = "leads/lead_detail.html"
     context_object_name = "lead"
     agent = False
 
 
-class LeadDeleteView(LoginRequiredMixin, DeleteView):
+class LeadDeleteView(LoginRequiredMixin, AccessControlMixin, DeleteView):
     model = Lead
     template_name = "leads/lead_delete.html"
     context_object_name = "lead"
