@@ -1,5 +1,6 @@
 from typing import Any
 from django.db.models.query import QuerySet
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms.models import BaseModelForm
 from django.http import HttpRequest, HttpResponse
 from django.utils.decorators import method_decorator
@@ -17,7 +18,7 @@ from core.utils import paginate_queryset
 from core.decorators import check_user_team
 
 
-class LeadListView(ListView):
+class LeadListView(LoginRequiredMixin, ListView):
     model = Lead
     template_name = "leads/lead_list.html"
     context_object_name = "leads"
@@ -44,7 +45,7 @@ class LeadListView(ListView):
         return context
 
 
-class LeadCreateView(CreateView):
+class LeadCreateView(LoginRequiredMixin, CreateView):
     template_name = "leads/lead_create.html"
 
     @method_decorator(check_user_team)
@@ -72,7 +73,7 @@ class LeadCreateView(CreateView):
 
 
 
-class LeadUpdateView(UpdateView):
+class LeadUpdateView(LoginRequiredMixin, UpdateView):
     model = Lead
     form_class = LeadUpdateForm
     template_name = "leads/lead_update.html"
@@ -87,14 +88,14 @@ class LeadUpdateView(UpdateView):
         return kwargs
 
 
-class LeadDetailView(DetailView):
+class LeadDetailView(LoginRequiredMixin, DetailView):
     model = Lead
     template_name = "leads/lead_detail.html"
     context_object_name = "lead"
     agent = False
 
 
-class LeadDeleteView(DeleteView):
+class LeadDeleteView(LoginRequiredMixin, DeleteView):
     model = Lead
     template_name = "leads/lead_delete.html"
     context_object_name = "lead"
