@@ -7,20 +7,20 @@ from django.shortcuts import redirect
 from teams.models import Team
 
 
-def check_user_team(function: Callable[..., HttpResponse]) -> Callable[..., HttpResponse]:
+def check_user_team(function):
     @wraps(function)
-    def wrapper(request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        if request.user.is_superuser:
+    def wrapper(request: HttpRequest, *args: Any, **kwargs: Any):
+        team_slug = kwargs.pop("team_slug", None)
+        
+        if request.user.is_superuser and not team_slug:
             return function(request, *args, **kwargs, team=None)
-    
-        team_slug = kwargs.get("team_slug")
         if team_slug:
             try:
                 team = Team.objects.get(slug=team_slug)
-                if any(member.user == request.user for member in team.members):
+                if request.user.is_superuser or any(member.user == request.user for member in team.members):
                     return function(request, *args, **kwargs, team=team)
             except Team.DoesNotExist:
-                return redirect("/")
-        return redirect("/")
+                return redirect(f"/accounts/dashboard/{request.user.username}/")
+        return redirect(f"/accounts/dashboard/{request.user.username}/")
     return wrapper
         
