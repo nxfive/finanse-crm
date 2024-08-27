@@ -10,9 +10,32 @@
     <div class="model-cont">
         <div class="model-content-field">
             <div class="model-cont-nav">
+                <div class="nav-cont">
+                    {% if user.is_superuser %}
+                        {% if lead.company %}
+                        <a href="{% url 'companies:company-detail' lead.company.slug %}">Company</a>
+                        {% endif %}
+                        {% if lead.team %}
+                        <a href="{% url 'teams:team-detail' lead.team.slug %}">Team</a>
+                        {% endif %}
+                        {% if lead.agent %}
+                        <a href="{% url 'agents:agent-detail' lead.agent.pk %}">Agent</a>
+                        {% endif %}
+                    {% endif %}
+                    
+                    {% if lead.team.manager.user == user or user in lead.team.memebers %}
+                        {% if lead.team %}
+                        <a href="{% url 'teams:team-detail' lead.team.slug %}">Team</a>
+                        {% endif%}
+                        {% if lead.team and lead.agent %}
+                        <a href="{% url 'teams:agents:agent-detail' team.slug lead.agent.pk %}">Agent</a>
+                        {% endif%}
+                    {% endif%}
+                </div>
                 <div class="model-task-content-nt">
                     <div class="model-element">
-                        <p><i class="fa-solid fa-user"></i> {{ lead.first_name }}</p>
+                        <p><b>Lead: {{ lead.first_name }}</b></p>
+                        <p><i class="fa-solid fa-building"></i> {{ lead.company }}</p>
                     </div>
                     <div class="model-element">
                         <p><i class="fa-solid fa-envelope"></i> {{ lead.email }}</p>
@@ -33,6 +56,21 @@
             </div>
             <div class="model-content">
                 <div class="model-element">
+                    <p>{% if lead.agent is not None %}
+                        <i class="fa-solid fa-user-tie"></i> {{ lead.agent.user.first_name}} {{ lead.agent.user.last_name }}
+                        {% else %}
+                        <i class="fa-solid fa-user-tie"></i> Not assigned
+                        {% endif %}
+                    </p>
+                    <p>
+                        {% if lead.team %}
+                        <i class="fa-solid fa-people-group"></i> {{ lead.team }}
+                        {% else %}
+                        <i class="fa-solid fa-people-group"></i> Not assigned
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="model-element">
                     <div class="as-icone-container">
                         <p class="as-icone">Status</p><p> {{ lead.status}} </p>
                     </div>
@@ -49,13 +87,21 @@
         <div class="model-action-cont">
             <ul>
                 <li>
+                    {% if user.is_superuser %}
                     <a href="{% url 'leads:lead-update' lead.pk %}">
+                    {% else %}
+                    <a href="{% url 'teams:leads:lead-update' team.slug lead.pk %}">
+                    {% endif %}
                         <h3>Update Lead</h3>
                         <p class="det-icon"><i class="fa-solid fa-pen-to-square"></i></p>
                     </a>
                 </li>
                 <li>
+                    {% if user.is_superuser %}
                     <a href="{% url 'leads:lead-delete' lead.pk %}">
+                    {% else %}
+                    <a href="{% url 'teams:leads:lead-delete' team.slug lead.pk %}">
+                    {% endif %}
                         <h3>Delete Lead</h3>
                         <p class="det-icon"><i class="fa-solid fa-trash"></i></p>
                     </a>
