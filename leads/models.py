@@ -68,3 +68,6 @@ class LeadSubmission(models.Model):
     http_user_agent = models.CharField(max_length=100)
     location = models.CharField(max_length=100, null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Submission: {self.ip_address}"
