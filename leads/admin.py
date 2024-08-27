@@ -1,6 +1,5 @@
-from typing import Any
 from django.contrib import admin
-from .models import Lead
+from .models import Lead, LeadSubmission
 from .forms import LeadAdminForm
 
 
@@ -25,4 +24,10 @@ class LeadAdmin(admin.ModelAdmin):
     search_fields = ("phone_number",)
 
 
+class LeadSubmissionAdmin(admin.ModelAdmin):
+    list_display = ("lead", "ip_address", "http_user_agent", "timestamp",)
+    readonly_fields = ("lead", "ip_address", "http_user_agent", "timestamp", "location")
+
+
 admin.site.register(Lead, LeadAdmin)
+admin.site.register(LeadSubmission, LeadSubmissionAdmin)
