@@ -71,3 +71,13 @@ class LeadSubmission(models.Model):
 
     def __str__(self):
         return f"Submission: {self.ip_address}"
+    
+
+class LeadAssignmentTracker(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name="tracker")
+    team_type = models.CharField(max_length=25)
+    current_team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True, blank=True)
+    current_agent = models.ForeignKey(Agent, on_delete=models.SET_NULL, null=True, blank=True)
+
+    class Meta:
+        unique_together = ("company", "team_type")
