@@ -4,7 +4,6 @@ from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
-from django.views import View
 
 from core.decorators import check_user_team
 from leads.models import Lead
@@ -26,23 +25,22 @@ class AccessControlMixin:
     
     def handle_access(self, request: HttpRequest, lead: Lead, team: Team, agent: bool) -> HttpResponseRedirect | None:
         if agent:
-            
-            if (team and request.user.is_superuser) or (team and not request.user in team.members):
+            if team and (request.user.is_superuser or self.team.manager.user == request.user):
                 messages.error(request, "You are not allowed to update this lead.")
-                return redirect(reverse("teams:leads:lead-list", kwargs={"team_slug": team.slug}))
+                return redirect(reverse('teams:leads:lead-list', kwargs={"team_slug": self.team.slug}))
             
             if request.user.is_superuser and not team:
                 messages.error(request, "You are not allowed to update this lead.")
                 return redirect(reverse("leads:lead-list"))
 
         if not request.user.is_superuser:
-            if team and team != lead.team:
+            if not lead.team or (team and team != lead.team):
                 messages.error(request, "You are not allowed to update this lead.")
                 return redirect("teams:leads:lead-list", team_slug=team.slug)
             
-            if team and not request.user.is_manager:
-                if team == lead.team and lead.agent and lead.agent.user != request.user:
-                    messages.error(request, "You are not allowed to update this lead.")
-                    return redirect("teams:leads:lead-list", team_slug=team.slug)
-        
+        if team == lead.team:
+            if (lead.agent and lead.agent.user != request.user) or (not request.user.is_manager and not lead.agent):
+                messages.error(request, "You are not allowed to update this lead.")
+                return redirect("teams:leads:lead-list", team_slug=team.slug)
+
         return None
