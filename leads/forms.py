@@ -22,9 +22,10 @@ class LeadBaseForm(forms.ModelForm):
         if self.__class__ == LeadBaseForm:
             raise NotImplementedError("BaseUserForm cannot be instantiated directly.")
         super().__init__(*args, **kwargs)
-        self.fields["team"].empty_label = "Select Team"
-        self.fields["agent"].empty_label = "Select Agent"
-
+        if "team" in self.fields:
+            self.fields["team"].empty_label = "Select Team"
+        if "agent" in self.fields:
+            self.fields["agent"].empty_label = "Select Agent"
 
     def clean_first_name(self) -> dict[str, Any]:
         name = self.cleaned_data.get("first_name")
