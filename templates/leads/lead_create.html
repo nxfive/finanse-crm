@@ -11,11 +11,14 @@
         <div class="model-content">
             <form method="POST">
                 {% csrf_token %}
-                <div class="model-element-up">
+                {{ form.first_name.errors }}
+                {{ form.phone_number.errors }}
+                {{ form.non_field_errors }}
+                <div class="model-element">
                     <p><i class="fa-solid fa-user"></i> {{ form.first_name }}</p>
+                    <p><i class="fa-solid fa-phone"></i> {{ form.phone_number }}</p>
                 </div>
                 <div class="model-element">
-                    <p><i class="fa-solid fa-phone"></i> {{ form.phone_number }}</p>
                     <p><i class="fa-solid fa-comment"></i> {{ form.message }}</p>
                 </div>
                 <div class="model-element">
@@ -23,8 +26,20 @@
                         <p class="as-icone">Product</p><p> {{ form.product }}</p>
                     </div>
                 </div>
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Team</p><p> {{ form.team }}</p>
+                    </div>
+                    <div class="as-icone-container">
+                        <p class="as-icone">Agent</p><p> {{ form.agent }}</p>
+                    </div>
+                </div>
                 <div class="model-element-action">
-                    <a href=""><i class="fa-solid fa-arrow-left"></i>Details</a>
+                    {% if user.is_superuser %}
+                    <a href="{% url 'leads:lead-list' %}"><i class="fa-solid fa-arrow-left"></i>Leads</a>
+                    {% else %}
+                    <a href="{% url 'teams:leads:lead-list' team.slug %}"><i class="fa-solid fa-arrow-left"></i>Leads</a>
+                    {% endif %}
                     <button type="submit" class="btn-agent-up">Create</button>
                 </div>
             </form>
