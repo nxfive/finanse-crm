@@ -3,9 +3,12 @@ from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.forms import Form
+
+from .models import Company
+
 from leads.forms import CompanyLeadCreateForm
 from leads.models import LeadSubmission
-from .models import Company
+from leads.utils import assign_lead_to_team_in_company, assign_lead_to_agent_in_team
 from teams.models import Team
 from agents.models import Agent
 
@@ -25,6 +28,15 @@ def company_lead_create(
                 http_user_agent=request.META.get("HTTP_USER_AGENT"),
             )
 
+            company = lead.company
+            if company.leads_assignment == Company.LeadAssignment.AUTO:
+                team = assign_lead_to_team_in_company(company, team_type=Team.TeamTypes.SUPPORT)
+                if team:
+                    lead.team = team
+                    agent = assign_lead_to_agent_in_team(team)
+                    if agent:
+                        lead.agent = agent
+            lead.save()
             messages.success(
                 request, "Thank you for your message. We will contact you shortly."
             )
