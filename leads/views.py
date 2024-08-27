@@ -15,7 +15,7 @@ from django.views.generic import (
     ListView,
     DetailView,
 )
-from .forms import LeadAdminForm, LeadCreateManagerForm, LeadUpdateForm
+from .forms import LeadAdminForm, LeadCreateManagerForm, LeadUpdateManagerForm, LeadUpdateAgentForm 
 from .models import Lead
 from .mixins import AccessControlMixin
 from core.utils import paginate_queryset
@@ -93,7 +93,6 @@ class LeadCreateView(LoginRequiredMixin, CreateView):
 
 class LeadUpdateView(LoginRequiredMixin, AccessControlMixin, UpdateView):
     model = Lead
-    form_class = LeadUpdateForm
     template_name = "leads/lead_update.html"
     agent = False
 
@@ -104,6 +103,13 @@ class LeadUpdateView(LoginRequiredMixin, AccessControlMixin, UpdateView):
         kwargs = super().get_form_kwargs()
         kwargs["user"] = self.request.user
         return kwargs
+
+    def get_form_class(self) -> BaseModelForm:
+        if self.request.user.is_superuser:
+            return LeadAdminForm
+        elif self.request.user.is_manager:
+            return LeadUpdateManagerForm
+        return LeadUpdateAgentForm
 
 
 class LeadDetailView(LoginRequiredMixin, AccessControlMixin, DetailView):
