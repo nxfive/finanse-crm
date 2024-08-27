@@ -9,7 +9,11 @@
     </div>
     <div class="list-container">
         <div class="list-icons">
+            {% if user.is_superuser %}
             <a href="{% url 'leads:lead-create' %}">Create</a>
+            {% elif user.is_manager %}
+            <a href="{% url 'teams:leads:lead-create' team.slug %}">Create</a>
+            {% endif %}
         </div>
         <div class="lead-content">
             <table class="content-table">
@@ -34,9 +38,21 @@
                         <td>{{ lead.status }}</td>
                         <td>{{ lead.created_at }}</td>
                         <td class="action">
+                            {% if user.is_superuser %}
                             <a class="action-detail" href="{% url 'leads:lead-detail' lead.pk %}">Details</a>
                             <a class="action-update" href="{% url 'leads:lead-update' lead.pk %}">Update</a>
                             <a class="action-delete" href="{% url 'leads:lead-delete' lead.pk %}">Delete</a>
+                            {% elif lead.team.manager.user == user %}
+                            <a class="action-detail" href="{% url 'teams:leads:lead-detail' team.slug lead.pk %}">Details</a>
+                            <a class="action-update" href="{% url 'teams:leads:lead-update' team.slug lead.pk %}">Update</a>
+                            <a class="action-delete" href="{% url 'teams:leads:lead-delete' team.slug lead.pk %}">Delete</a>
+                            {% elif lead.agent.user == user %}
+                            <a class="action-detail" href="{% url 'teams:leads:my-lead-detail' team.slug lead.pk %}">Details</a>
+                            <a class="action-update" href="{% url 'teams:leads:my-lead-update' team.slug lead.pk %}">Update</a>
+                            <a class="action-delete" href="{% url 'teams:leads:my-lead-delete' team.slug lead.pk %}">Delete</a>
+                            {% else %}
+                            <i class="fa-solid fa-xmark"></i>
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}
