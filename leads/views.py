@@ -67,7 +67,8 @@ class LeadCreateView(LoginRequiredMixin, CreateView):
         if not request.user.is_superuser:
             if self.team and self.team.manager.user != request.user:
                 raise PermissionDenied("You do not have permission to access this resource.")
-            raise PermissionDenied("You do not have permission to access this resource.")
+            elif not self.team:
+                raise PermissionDenied("You do not have permission to access this resource.")
 
         return super().dispatch(request, *args, **kwargs)
 
