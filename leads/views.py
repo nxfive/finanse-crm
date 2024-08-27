@@ -37,7 +37,7 @@ class LeadListView(ListView):
         if self.agent:
             if not self.team and request.user.is_superuser:
                 return redirect(reverse('leads:lead-list'))
-            if (self.team and request.user.is_superuser) or (self.team and not request.user in self.team.members):
+            if self.team and (request.user.is_superuser or self.team.manager.user == request.user):
                 return redirect(reverse('teams:leads:lead-list', kwargs={"team_slug": self.team.slug}))
 
         return super().dispatch(request, *args, **kwargs)
@@ -99,11 +99,6 @@ class LeadUpdateView(LoginRequiredMixin, AccessControlMixin, UpdateView):
     def get_success_url(self) -> str:
         return reverse_lazy("leads:lead-detail", kwargs={"pk": self.kwargs["pk"]})
     
-    def get_form_kwargs(self) -> dict[str, Any]:
-        kwargs = super().get_form_kwargs()
-        kwargs["user"] = self.request.user
-        return kwargs
-
     def get_form_class(self) -> BaseModelForm:
         if self.request.user.is_superuser:
             return LeadAdminForm
