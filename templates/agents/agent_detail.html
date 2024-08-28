@@ -7,6 +7,7 @@
     <div class="title">
         <h1>Agent Details</h1>
     </div>
+    {% include "alerts.html" %}
     <div class="model-cont">
         <div class="model-content-field">
             <div class="model-content">
@@ -18,7 +19,7 @@
                     <p><i class="fa-solid fa-user-tie"></i> {{ agent.role }}</p>
                     <p><i class="fa-solid fa-people-group"></i>
                         {% if agent.team %}
-                        {{ agent.team }}
+                        <a href="{% url 'teams:team-detail' agent.team.slug %}" >{{ agent.team }}</a>
                         {% else %}
                         Not assigned
                         {% endif %}
@@ -91,6 +92,21 @@
         </div>
         <div class="model-action-cont">
             <ul>
+                {% if user.is_manager %}
+                <li>
+                    <a href="{% url 'teams:agents:agent-companies-assign' team.slug agent.pk %}" id="agent-delete" >
+                        <h3>Assign Companies</h3>
+                        <p class="det-icon"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-building"></i></p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'teams:agents:agent-companies-unassign' team.slug agent.pk %}" id="agent-delete" >
+                        <h3>Unassign Companies</h3>
+                        <p class="det-icon"><i class="fa-solid fa-minus"></i><i class="fa-solid fa-building"></i></p>
+                    </a>
+                </li>
+                {% endif %}
+                {% if user.is_superuser %}
                 <li>
                     <a href="{% url 'agents:agent-update' agent.pk %}">
                         <h3>Update Agent</h3>
@@ -103,6 +119,7 @@
                         <p class="det-icon"><i class="fa-solid fa-trash"></i></p>
                     </a>
                 </li>
+                {% endif %}
             </ul>
         </div>
     </div>
