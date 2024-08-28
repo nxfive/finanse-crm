@@ -37,8 +37,15 @@ def validate_team(request: HttpRequest, team_slug: str) -> bool | HttpResponseRe
     return True
 
 
-def validate_team_and_agent(request: HttpRequest, team_slug: str, agent_pk: int) -> Tuple[Team, Agent] | HttpResponseRedirect:
-    """for managers"""
+def validate_team_and_agent(request: HttpRequest, agent_pk: int, team_slug: str=None) -> Tuple[Team, Agent] | HttpResponseRedirect:
+    """for admin and managers"""
+    if request.user.is_superuser:
+        agent = get_object_or_404(Agent, pk=agent_pk)
+        if not agent.team:
+            messages.error(request, "You cannot assign a company because the agent is not assigned to any team.")
+            return redirect("agents:agent-detial", pk=agent_pk)
+        return agent.team, agent
+
     team = get_object_or_404(Team, slug=team_slug)
 
     if team.manager.user != request.user:
@@ -63,8 +70,7 @@ def process_companies(
     template_name: str,
 ) -> HttpResponseRedirect:
 
-    result = validate_team_and_agent(request, team_slug, pk)
-
+    result = validate_team_and_agent(request, pk, team_slug)
     if isinstance(result, HttpResponseRedirect):
         return result
 
