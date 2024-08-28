@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 
 from core.forms import BaseUserForm, Agent
 from teams.models import Team
+from companies.models import Company
 
 
 class BaseAgentForm(forms.ModelForm):
@@ -40,3 +41,35 @@ class AgentCreateForm(BaseAgentForm, BaseUserForm):
 class AgentUpdateForm(BaseAgentForm):
     class Meta(BaseAgentForm.Meta):
         exclude = ("user",)
+
+
+class AgentCompaniesAssignForm(forms.ModelForm):
+    companies = forms.ModelMultipleChoiceField(queryset=Company.objects.none(),
+        widget=forms.SelectMultiple,
+        required=True,
+    )
+    class Meta:
+        model = Agent
+        fields = ("companies",)
+
+    def __init__(self, *args, **kwargs):
+        self.team = kwargs.pop("team", None)
+        super().__init__(*args, **kwargs)
+
+        self.fields["companies"].queryset = self.team.companies.exclude(id__in=self.instance.companies.values_list("id", flat=True))
+
+
+class AgentCompaniesUnassignForm(forms.ModelForm):
+    companies = forms.ModelMultipleChoiceField(queryset=Company.objects.none(),
+        widget=forms.SelectMultiple,
+        required=True,
+    )
+    class Meta:
+        model = Agent
+        fields = ("companies",)
+
+    def __init__(self, *args, **kwargs):
+        self.team = kwargs.pop("team", None)
+        super().__init__(*args, **kwargs)
+
+        self.fields["companies"].queryset = self.instance.companies
