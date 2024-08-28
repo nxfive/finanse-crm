@@ -23,18 +23,19 @@ class BaseAgentForm(forms.ModelForm):
         cleaned_data = super().clean()
         role = cleaned_data.get("role")
         team = cleaned_data.get("team")
+        if team:
+            if role == Agent.Roles.SALES and team.team_type != Team.TeamTypes.SALES:
+                raise ValidationError("Sales agent must be assigned to Sales team.")
 
-        if role == Agent.Roles.SALES and team != Team.TeamTypes.SALES:
-            raise ValidationError("Sales agent must be assigned to Sales team.")
-
-        if role == Agent.Roles.SUPPORT and team != Team.TeamTypes.SUPPORT:
-            raise ValidationError(
-                "Sales Support agent must be assigned to Sales Support team."
-            )
+            if role == Agent.Roles.SUPPORT and team.team_type != Team.TeamTypes.SUPPORT:
+                raise ValidationError(
+                    "Sales Support agent must be assigned to Sales Support team."
+                )
 
 
 class AgentCreateForm(BaseAgentForm, BaseUserForm):
-    class Meta(BaseUserForm.Meta, BaseAgentForm.Meta):
+    class Meta:
+        model = BaseAgentForm.Meta.model
         fields = BaseUserForm.Meta.fields + BaseAgentForm.Meta.fields
 
 
