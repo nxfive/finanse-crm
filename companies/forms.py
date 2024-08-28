@@ -16,7 +16,7 @@ class CompanyForm(forms.ModelForm):
             "name",
             "path",
             "website",
-            "lead_assignment",
+            "leads_assignment",
         )
         widgets = {
             "name": forms.TextInput(attrs={"placeholder": "Enter company name"}),
@@ -45,6 +45,8 @@ class CompanyAssignAgentsForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         self.company = kwargs.pop("company", None)
+        super().__init__(*args, **kwargs)
+
         self.fields["agents"].choices = self.get_agents_with_teams()
 
     def get_agents_with_teams(self):
@@ -74,11 +76,11 @@ class CompanyUnassignAgentsForm(forms.Form):
         queryset=Agent.objects.all(),
         widget=forms.SelectMultiple,
         required=True,
-        label="Select Agents",
     )
 
     def __init__(self, *args, **kwargs):
         self.company = kwargs.pop("company", None)
+        super().__init__(*args, **kwargs)
         self.fields["agents"].choices = self.get_agents_with_teams()
 
     def get_agents_with_teams(self):
@@ -99,19 +101,21 @@ class CompanyAssignTeamsForm(forms.Form):
         queryset=Team.objects.all(),
         widget=forms.SelectMultiple,
         required=True,
-        label="Select Teams",
+        # label="Select Teams",
     )
 
     def __init__(self, *args, **kwargs):
         self.company = kwargs.pop("company", None)
+        super().__init__(*args, **kwargs)
+
         if self.company:
-            assigned_teams_ids = self.company.teams_assign.values_list("id", flat=True)
-            self.fields["teams"].choices = Team.objects.exclude(id__in=assigned_teams_ids)
+            assigned_teams_ids = self.company.teams.values_list("id", flat=True)
+            self.fields["teams"].queryset = Team.objects.exclude(id__in=assigned_teams_ids)
         else:
-            self.fields["teams"].choices = []
+            self.fields["teams"].queryset = []
 
 
-class CompanyAssignTeamsForm(forms.Form):
+class CompanyUnassignTeamsForm(forms.Form):
     """
         Form for unassigning teams to a specific Company.
 
@@ -126,8 +130,10 @@ class CompanyAssignTeamsForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         self.company = kwargs.pop("company", None)
+        super().__init__(*args, **kwargs)
+
         if self.company:
-            assigned_teams_ids = self.company.teams_assign.values_list("id", flat=True)
-            self.fields["teams"].choices = Team.objects.filter(id__in=assigned_teams_ids)
+            assigned_teams_ids = self.company.teams.values_list("id", flat=True)
+            self.fields["teams"].queryset = Team.objects.filter(id__in=assigned_teams_ids)
         else:
-            self.fields["teams"].choices = []
+            self.fields["teams"].queryset = []
