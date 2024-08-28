@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Lead, LeadSubmission
+from .models import Lead, LeadSubmission, LeadAssignmentTracker
 from .forms import LeadAdminForm
 
 
@@ -29,5 +29,10 @@ class LeadSubmissionAdmin(admin.ModelAdmin):
     readonly_fields = ("lead", "ip_address", "http_user_agent", "timestamp", "location")
 
 
+class LeadAssignmentTrackerAdmin(admin.ModelAdmin):
+    list_display = ("company", "team_type", "current_team", "current_agent",)
+
+
 admin.site.register(Lead, LeadAdmin)
 admin.site.register(LeadSubmission, LeadSubmissionAdmin)
+admin.site.register(LeadAssignmentTracker, LeadAssignmentTrackerAdmin)
