@@ -1,0 +1,74 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="lead-list">
+    <div class="title">
+        <h1>{{company.name}} Teams</h1>
+    </div>
+    <div class="list-container">
+        <div class="list-icons"></div>
+        <div class="lead-content">
+            <table class="content-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Manager</th>
+                        <th>Members</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in teams %}
+                    <tr>
+                        <td>{{ t.pk }}</a></td>
+                        <td>{{ t.name }}</td>
+                        <td>{{ t.team_type }}</td>
+                        <td>{{ t.manager }}</td>
+                        <td>{{ t.members_count }}</td>
+                        <td class="action">
+                            <a class="action-detail" href="{% url 'teams:team-detail' t.slug %}">Details</a>
+                            <a class="action-update" href="{% url 'teams:team-update' t.slug %}">Update</a>
+                            <a class="action-delete" href="{% url 'teams:team-delete' t.slug %}">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="page-pagination">
+        {% if teams.has_other_pages %}
+        <ul class="pagination-items">
+            {% if teams.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ teams.previous_page_number }}"><i class="fa-solid fa-angle-left"></i></a></li>
+            {% else %}
+            <li class="page-item disabled"><a class="page-link" href="#"><i class="fa-solid fa-angle-left"></i></a></li>
+            {% endif %}
+    
+            {% for i in teams.paginator.page_range %}
+                {% if i == 1 or i == teams.paginator.num_pages or i >= teams.number|add:-2 and i <= teams.number|add:2 %}
+                    {% if teams.number == i %}
+                    <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
+                    {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                {% elif i == teams.number|add:-3 or i == teams.number|add:3 %}
+                    <li class="page-item disabled"><a class="page-link" href="#">...</a></li>
+                {% endif %}
+            {% endfor %}
+    
+            {% if teams.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ teams.next_page_number }}"><i class="fa-solid fa-angle-right"></i></a></li>
+            {% else %}
+            <li class="page-item disabled"><a class="page-link" href="#"><i class="fa-solid fa-angle-right"></i></a></li>
+            {% endif %}
+        </ul>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock content %}
