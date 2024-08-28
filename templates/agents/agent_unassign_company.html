@@ -6,7 +6,7 @@
 
 <div class="model-container">
     <div class="title">
-        <h1>Company Unassign</h1>
+        <h1>Agent: Company Unassign</h1>
     </div>
     <div class="model-cont">
         <div class="model-content">
@@ -21,7 +21,11 @@
                     </div>
                 </div>
                 <div class="model-element-action">
-                    <a href="{% url 'agents:agent-detail' agent.pk %}"><i class="fa-solid fa-arrow-left"></i>Details</a>
+                    {% if user.is_superuser %}
+                    <a href="{% url 'agents:agent-list' %}"><i class="fa-solid fa-arrow-left"></i>Agents</a>
+                    {% else %}
+                    <a href="{% url 'teams:agents:agent-list' team.slug %}"><i class="fa-solid fa-arrow-left"></i>Agents</a>
+                    {% endif %}
                     <button type="submit" class="btn-agent-up">Unassign</button>
                 </div>
             </form>
