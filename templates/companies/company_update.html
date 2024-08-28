@@ -1,0 +1,57 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="model-container">
+    <div class="title">
+        <h1>Update Company</h1>
+    </div>
+    <div class="model-cont">
+        <div class="model-content-field">
+            <div class="model-content">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="model-element">
+                        <p><b>Company: {{ form.name }}</b></p>
+                    </div>
+                    <div class="model-element">
+                        <div class="as-icone-container">
+                            <p class="as-icone">Path</p><p> {{ form.path }}</p>
+                        </div>
+                        <div class="as-icone-container">
+                            <p class="as-icone">Website</p><p> {{ form.website }}</p>
+                        </div>
+                    </div>
+                    <div class="model-element">
+                        <div class="as-icone-container">
+                            <p class="as-icone">Leads Assignment</p><p> {{ form.leads_assignment }}</p>
+                        </div>
+                    </div>
+                    <div class="model-element-action">
+                        <a href="{% url 'companies:company-list' %}"><i class="fa-solid fa-arrow-left"></i>Companies</a>
+                        <button type="submit" class="btn-agent-up">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="model-action-cont">
+            <ul>
+                <li>
+                    <a href="{% url 'companies:company-detail' company.slug %}">
+                        <h3>Company Details</h3>
+                        <p class="det-icon"><i class="fa-solid fa-info"></i></p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'companies:company-delete' company.slug %}">
+                        <h3>Delete Company</h3>
+                        <p class="det-icon"><i class="fa-solid fa-trash"></i></p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
