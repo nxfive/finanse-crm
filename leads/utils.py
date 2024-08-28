@@ -9,7 +9,7 @@ def assign_lead_to_team_in_company(company, team_type):
     
     next_team = None
 
-    tracker, created = LeadAssignmentTracker.objects.get_or_create(company, team_type)
+    tracker, created = LeadAssignmentTracker.objects.get_or_create(company=company, team_type=team_type)
 
     if (created and len(teams) > 1) or len(teams) == 1:
         next_team = teams[0]
