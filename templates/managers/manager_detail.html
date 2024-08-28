@@ -1,0 +1,55 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="model-container">
+    <div class="title">
+        <h1>Manager details</h1>
+    </div>
+    <div class="model-cont">
+        <div class="model-content-field">
+            <div class="model-cont-nav">
+                <div class="nav-cont">
+                    {% if manager.team %}
+                    <a href="{% url 'teams:team-detail' manager.team.slug %}">Team</a>
+                        {% if manager.team.agents.exists %}
+                        <a href="{% url 'teams:agents:agent-list' manager.team.slug %}">Agents</a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                <div class="model-task-content-nt">
+                    <div class="model-element">
+                        <p><i class="fa-solid fa-user"></i> {{ manager.user }}</p>
+                        <p><i class="fa-solid fa-people-group"></i> 
+                            {% if manager.team %}
+                            {{ manager.team }}
+                            {% else %}
+                            Not assigned
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="model-element">
+                        <div class="as-icone-container">
+                            <p class="as-icone">Agents</p><p> {{ manager.team.agents.count }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="model-action-cont">
+            <ul>
+                {% if user.is_superuser %}
+                <li>
+                    <a href="{% url 'managers:manager-delete' manager.pk %}">
+                        <h3>Delete Manager</h3>
+                        <p class="det-icon"><i class="fa-solid fa-trash"></i></p>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
