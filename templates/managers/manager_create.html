@@ -1,0 +1,26 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+
+{% block content %}
+<div class="model-container">
+    <div class="title">
+        <h1>Manager Create</h1>
+    </div>
+    <div class="model-cont">
+        <div class="model-content">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="model-element-up">
+                    <p><i class="fa-solid fa-user"></i> {{ form.user }}</p>
+                </div>
+                <div class="model-element-action">
+                    <a href=""><i class="fa-solid fa-arrow-left"></i>Managers</a>
+                    <button type="submit" class="btn-agent-up">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
