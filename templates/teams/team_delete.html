@@ -1,4 +1,5 @@
 {% extends "dashboard.html" %}
+{% load custom_filters %}
 {% load static %}
 
 {% block content %}
@@ -9,16 +10,35 @@
     </div>
     <div class="model-cont">
         <div class="model-content-field">
+            <div class="model-cont-nav">
+                <div class="nav-cont">
+                    <a href="{% url 'teams:leads:lead-list' team.slug %}">Leads</a>
+                    <a href="{% url 'teams:agents:agent-list' team.slug %}">Agents</a>
+                </div>
+                <div class="model-task-content-nt">
+                    <div class="model-element">
+                        <h3>Manager</h3>
+                    </div>
+                    <div class="model-element">
+                        <p><i class="fa-solid fa-user"></i> {{ team.manager}}</p>
+                    </div>
+                    <div class="model-element">
+                        <p><i class="fa-solid fa-phone"></i> {{ team.manager.user.phone_number }}</p>
+                        <p><i class="fa-solid fa-envelope"></i> {{ team.manager.user.email }}</p>
+                    </div>
+                </div>
+            </div>
             <div class="model-content">
                 <div class="model-element">
-                    <h3>Manager</h3>
+                    <h3>Companies</h3><h3>Leads Assignment</h3>
                 </div>
-                <div class="model-element">
-                    <p><i class="fa-solid fa-user-tie"></i> {{ team.manager}}</p>
-                </div>
-                <div class="model-element">
-                    <p><i class="fa-solid fa-phone"></i> {{ team.manager.user.phone_number }}</p>
-                    <p><i class="fa-solid fa-envelope"></i> {{ team.manager.user.email }}</p>
+                <div class="scroll">
+                    {% for assignment in team.teamcompanyassignment_set.all %}
+                    <div class="model-element">
+                        <p>{{ assignment.company.name }}</p>
+                        <p>{{ assignment.get_leads_assignment_display }}</p>
+                    </div>
+                    {% endfor %}
                 </div>
             </div>
             <div class="model-content">
@@ -31,15 +51,19 @@
                             <tr>
                                 <th>Agent</th>
                                 <th>Email</th>
-                                <th>Phone</th>
+                                <th>Companies</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for agent in team.agents.all %}
                             <tr>
+                                {% if user.is_superuser %}
                                 <td><a href="{% url 'agents:agent-detail' agent.pk %}"><b>{{ agent.user.first_name }} {{ agent.user.last_name }} </b></a></td>
+                                {% else %}
+                                <td><a href="{% url 'teams:agents:agent-detail' team.slug agent.pk %}"><b>{{ agent.user.first_name }} {{ agent.user.last_name }} </b></a></td>
+                                {% endif %}
                                 <td>{{ agent.user.email }}</td>
-                                <td>{{ agent.user.phone_number }}</td>
+                                <td>{{ agent.companies.all|join_companies}}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
