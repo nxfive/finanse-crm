@@ -7,10 +7,12 @@
     <div class="title">
         <h1>Teams</h1>
     </div>
+    {% include "alerts.html" %}
     <div class="list-container">
         <div class="list-icons">
+            {% if user.is_superuser %}
             <a href="{% url 'teams:team-create' %}">Create</a>
-            <a href="{% url 'teams:team-detail' team.slug %}">My Team</a>
+            {% endif %}
         </div>
         <div class="lead-content">
             <table class="content-table">
@@ -20,22 +22,28 @@
                         <th>Name</th>
                         <th>Type</th>
                         <th>Manager</th>
-                        <th>Members</th>
+                        <th>Agents</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for team in teams %}
-                    
+                    {% for t in teams %}
                     <tr>
-                        <td>{{ team.pk }}</a></td>
-                        <td>{{ team.name }}</td>
-                        <td>{{ team.team_type }}</td>
-                        <td>{{ team.manager }}</td>
-                        <td>{{ team.members_count }}</td>
+                        <td>{{ t.pk }}</a></td>
+                        <td>{{ t.name }}</td>
+                        <td>{{ t.team_type }}</td>
+                        <td>{{ t.manager }}</td>
+                        <td>{{ t.agents.count }}</td>
                         <td class="action">
-                            <a class="action-detail" href="{% url 'teams:team-detail' team.slug %}">Details</a>
-                            <a class="action-delete" href="{% url 'teams:team-delete' team.slug %}">Delete</a>
+                            {% if user.is_superuser %}
+                            <a class="action-detail" href="{% url 'teams:team-detail' t.slug %}">Details</a>
+                            <a class="action-update" href="{% url 'teams:team-update' t.slug %}">Update</a>
+                            <a class="action-delete" href="{% url 'teams:team-delete' t.slug %}">Delete</a>
+                            {% elif t.manager.user == user %}
+                            <a class="action-detail" href="{% url 'teams:team-detail' t.slug %}">Details</a>
+                            {% else %}
+                            <i class="fa-solid fa-xmark"></i>
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}
