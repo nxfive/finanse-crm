@@ -1,0 +1,59 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="model-container">
+    <div class="title">
+        <h1>Team: Companies Update</h1>
+    </div>
+    <div class="model-cont">
+        <div class="model-content">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Name</p>
+                        <p>{% if user.is_superuser %} {{ form.name }}{% else %} {{ team.name }}{% endif %}</p>
+                    </div>
+                    <div class="as-icone-container">
+                        <p class="as-icone">Manager</p>
+                        <p>{% if user.is_superuser %} {{ form.manager }}{% else %} {{ team.manager }}{% endif %}</p>
+                    </div>
+                </div>
+                <div class="model-element-up">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Companies</p>
+                        {% for company in companies %}
+                        <div class="select-comp-items">
+                            <label for="company_{{ company.id }}">{{ company.name }}</label>
+                            <input type="hidden" name="companies" value="{{ company.id }}" id="company_{{ company.id }}">
+                            <select name="leads_assignment_{{ company.id }}">
+                                <option value="auto">Auto</option>
+                                <option value="manual">Manual</option>
+                                <option value="disabled">Disabled</option>
+                            </select>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="model-element-action">
+                    <a href="{% url 'companies:company-list' %}"><i class="fa-solid fa-arrow-left"></i>Companies</a>
+                    <button type="submit" class="btn-update-sub">Update</button>
+                </div>
+            </form>
+        </div>
+        <div class="model-action-cont">
+            <ul>
+                <li>
+                    <a href="{% url 'teams:team-detail' team.slug %}">
+                        <h3>Team Details</h3>
+                        <p class="det-icon"><i class="fa-solid fa-info"></i></p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
