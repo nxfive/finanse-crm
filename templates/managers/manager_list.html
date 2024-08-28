@@ -1,0 +1,51 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="lead-list">
+    <div class="title">
+        <h1>Managers</h1>
+    </div>
+    {% include 'alerts.html' %}
+    <div class="list-container">
+        <div class="list-icons">
+            <a href="{% url 'managers:manager-create' %}">Create</a>
+        </div>
+        <div class="lead-content">
+            <table class="content-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Team</th>
+                        <th>Agents</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for manager in managers %}
+                    <tr>
+                        <td>{{ manager.pk }}</a></td>
+                        <td>{{ manager.user }}</td>
+                        <td>{{ manager.team }}</td>
+                        <td>{{ manager.team.agents.count }}</td>
+                        <td class="action">
+                            {% if user.is_superuser %}
+                            <a class="action-detail" href="{% url 'managers:manager-detail' manager.pk %}">Details</a>
+                            <a class="action-delete" href="{% url 'managers:manager-delete' manager.pk %}">Delete</a>
+                            {% elif manager.user == user %}
+                            <a class="action-detail" href="{% url 'managers:manager-detail' manager.pk %}">Details</a>
+                            {% else %}
+                            <i class="fa-solid fa-xmark"></i>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
