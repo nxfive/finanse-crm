@@ -12,7 +12,7 @@
         <div class="model-content-field">
             <div class="model-content">
                 <div class="model-element">
-                    <p><i class="fa-solid fa-user"></i> {{ agent.user.first_name }} {{ agent.user.last_name }}</p>
+                    <p>Agent: {{ agent.user.first_name }} {{ agent.user.last_name }}</p>
                     <p><i class="fa-solid fa-cake-candles"></i> {{ agent.user.birth_date }}</p>
                 </div>
                 <div class="model-element">
@@ -92,6 +92,32 @@
         </div>
         <div class="model-action-cont">
             <ul>
+                {% if user.is_superuser %}
+                <li>
+                    <a href="{% url 'agents:agent-companies-assign' agent.pk %}">
+                        <h3>Assign Companies</h3>
+                        <p class="det-icon"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-building"></i></p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'agents:agent-companies-unassign' agent.pk %}">
+                        <h3>Unassign Companies</h3>
+                        <p class="det-icon"><i class="fa-solid fa-minus"></i><i class="fa-solid fa-building"></i></p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'agents:agent-update' agent.pk %}">
+                        <h3>Update Agent</h3>
+                        <p class="det-icon"><i class="fa-solid fa-pen-to-square"></i></p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'agents:agent-delete' agent.pk %}" id="agent-delete" >
+                        <h3>Delete Agent</h3>
+                        <p class="det-icon"><i class="fa-solid fa-trash"></i></p>
+                    </a>
+                </li>
+                {% endif %}
                 {% if user.is_manager %}
                 <li>
                     <a href="{% url 'teams:agents:agent-companies-assign' team.slug agent.pk %}" id="agent-delete" >
@@ -103,20 +129,6 @@
                     <a href="{% url 'teams:agents:agent-companies-unassign' team.slug agent.pk %}" id="agent-delete" >
                         <h3>Unassign Companies</h3>
                         <p class="det-icon"><i class="fa-solid fa-minus"></i><i class="fa-solid fa-building"></i></p>
-                    </a>
-                </li>
-                {% endif %}
-                {% if user.is_superuser %}
-                <li>
-                    <a href="{% url 'agents:agent-update' agent.pk %}">
-                        <h3>Update Agent</h3>
-                        <p class="det-icon"><i class="fa-solid fa-pen-to-square"></i></p>
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'agents:agent-delete' agent.pk %}" id="agent-delete" >
-                        <h3>Delete Agent</h3>
-                        <p class="det-icon"><i class="fa-solid fa-trash"></i></p>
                     </a>
                 </li>
                 {% endif %}
