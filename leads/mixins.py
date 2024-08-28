@@ -37,8 +37,8 @@ class AccessControlMixin:
             if not lead.team or (team and team != lead.team):
                 messages.error(request, "You are not allowed to update this lead.")
                 return redirect("teams:leads:lead-list", team_slug=team.slug)
-            
-        if team == lead.team:
+        
+        if team and team == lead.team:
             if (lead.agent and lead.agent.user != request.user) or (not request.user.is_manager and not lead.agent):
                 messages.error(request, "You are not allowed to update this lead.")
                 return redirect("teams:leads:lead-list", team_slug=team.slug)
