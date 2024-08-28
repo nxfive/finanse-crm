@@ -20,7 +20,11 @@
                 </div>
                 {% endif %}
                 <div class="nav-items-title">
+                    {% if user.is_superuser %}
                     <a href="{% url 'leads:lead-list' %}">Leads <i class="fa-solid fa-angle-right"></i></a>
+                    {% else %}
+                    <a href="{% url 'teams:leads:lead-list' team.slug %}">Leads <i class="fa-solid fa-angle-right"></i></a>
+                    {% endif %}
                 </div>
                 <div class="nav-items-title">
                     <a href="{% url 'agents:agent-list' %}">Agents <i class="fa-solid fa-angle-right"></i></a>
