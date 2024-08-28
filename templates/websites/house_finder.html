@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block content %}
+
+<div class="home-page-h-finder">
+    <div class="home-info-h-finder">
+        <div class="home-title">
+            <h1>House<span>Finder</span></h1>
+        </div>
+        <div class="houses">
+            <div class="house-item">
+                <div class="house-image himg1"></div>
+                <h3>Bay House</h3>
+                <h5>850.000,00$</h2>
+                <p>Los Angeles, CA</p>
+            </div>
+            <div class="house-item">
+                <div class="house-image himg2"></div>
+                <h3>Binya House</h3>
+                <h5>1.830.000,00$</h2>
+                <p>Los Angeles, CA</p>
+            </div>
+            <div class="house-item">
+                <div class="house-image himg3"></div>
+                <h3>Curtis House</h3>
+                <h5>720.000,00$</h2>
+                <p>Jacksonville, FL</p>
+            </div>
+            <div class="house-item">
+                <div class="house-image himg4"></div>
+                <h3>Silent House</h3>
+                <h5>990.000,00$</h2>
+                <p>Indianapolis, IN</p>
+            </div>
+            <div class="house-item">
+                <div class="house-image himg5"></div> 
+                <h3>Hill House</h3>
+                <h5>670.000,00$</h2>
+                <p>Philadelphia, PA</p>
+            </div>
+            <div class="house-item">
+                <div class="house-image himg6"></div> 
+                <h3>Forest House</h3>
+                <h5>550.000,00$</h2>
+                <p>Columbus, OH</p>
+            </div>
+        </div>
+    </div>
+    <div class="client-form-h-finder">
+        <h1>Contact us to inquire about financing options for your chosen house or other financial products</h1>
+        <form method="POST" class="form">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.first_name }}
+            </div>
+            <div class="form-group">
+                {{ form.phone_number }}
+            </div>
+            <div class="form-group">
+                {{ form.product }}
+            </div>
+            <div class="form-group">
+                {{ form.message }}
+            </div>
+            <div class="form-group">
+                {{ form.captcha }}
+            </div>
+            <button type="submit" class="btn" id="submit">Submit</button>
+        </form>
+    </div>
+</div>
+{% endblock content %}
