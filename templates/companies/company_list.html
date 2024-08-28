@@ -1,0 +1,87 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="lead-list">
+    <div class="title">
+        {% if team.slug in request.path %}
+        <h1>Companies <br>{{ team.team_type }} {{ team.name }}</h1>
+        {% else %}
+        <h1>Companies</h1>
+        {% endif %}
+    </div>
+    <div class="list-container">
+        <div class="list-icons">
+            {% if user.is_superuser %}
+            <a href="{% url 'companies:company-create' %}">Create</a>
+            {% elif manager and not team.slug in request.path %}
+            <a href="{% url 'teams:companies:company-list' team.slug %}">My Team Companies</a>
+            {% elif manager and team.slug in request.path %}
+            <a href="{% url 'companies:company-list' %}">Companies</a>
+            {% endif %}
+        </div>
+        <div class="lead-content">
+            <table class="content-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Website</th>
+                        <th>Leads</th>
+                        <th>Teams</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for company in companies %}
+                    <tr>
+                        <td>{{ company.pk }}</td>
+                        <td>{{ company.name }}</td>
+                        <td>{{ company.website }}</td>
+                        <td>{{ company.leads.count }}</td>
+                        <td>{{ company.teams.count }}</td>
+                        <td class="action">
+                            {% if request.user.is_superuser %}
+                            <a class="action-detail" href="{% url 'companies:company-detail' company.slug %}">Details</a>
+                            <a class="action-update" href="{% url 'companies:company-update' company.slug %}">Update</a>
+                            <a class="action-delete" href="{% url 'companies:company-delete' company.slug %}">Delete</a>
+                            {% elif manager and team.manager.user == request.user %}
+                            <a class="action-detail" href="{% url 'teams:companies:company-detail' team.slug company.slug %}">Details</a>
+                            {% else %}
+                            <i class="fa-solid fa-xmark"></i>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="page-pagination">
+        {% if companies.has_other_pages %}
+        <ul class="pagination-items">
+            {% if companies.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ companies.previous_page_number }}"><i class="fa-solid fa-angle-left"></i></a></li>
+            {% else %}
+            <li class="page-item disabled"><a class="page-link" href="#"><i class="fa-solid fa-angle-left"></i></a></li>
+            {% endif %}
+            {% for i in companies.paginator.page_range %}
+                {% if companies.number == i %}
+                <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
+                {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if companies.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ companies.next_page_number }}"><i class="fa-solid fa-angle-right"></i></a></li>
+            {% else %}
+            <li class="page-item disabled"><a class="page-link" href="#"><i class="fa-solid fa-angle-right"></i></a></li>    
+            {% endif %}
+        </ul>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock content %}
