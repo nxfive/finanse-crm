@@ -28,7 +28,12 @@
                     </div>
                 </div>
                 <div class="model-element-action">
-                    <button type="submit" class="btn-update-sub">Update</button>
+                    {% if user.is_superuser %}
+                    <a href="{% url 'agents:agent-list' %}"><i class="fa-solid fa-arrow-left"></i>Agents</a>
+                    {% else %}
+                    <a href="{% url 'teams:agents:agent-list' team.slug %}"><i class="fa-solid fa-arrow-left"></i>Agents</a>
+                    {% endif %}
+                    <button type="submit" class="btn-agent-up">Assign</button>
                 </div>
             </form>
         </div>
