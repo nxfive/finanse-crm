@@ -52,13 +52,14 @@ class Lead(models.Model):
 
     def save(self, *args, **kwargs):
         path = kwargs.pop("path", None)
-        if path:
-            try: 
-                self.company = Company.objects.get(path=path)
-            except Company.DoesNotExist:
+        if not self.pk:
+            if path:
+                try: 
+                    self.company = Company.objects.get(path=path)
+                except Company.DoesNotExist:
+                    self.company = Company.objects.get(name="Test")
+            else:
                 self.company = Company.objects.get(name="Test")
-        else:
-            self.company = Company.objects.get(name="Test")
         super().save(*args, **kwargs)
 
 
