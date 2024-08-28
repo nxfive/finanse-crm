@@ -24,9 +24,9 @@ class AccountBaseForm(forms.ModelForm):
         )
         widgets = {
             "first_name": forms.TextInput(attrs={"placeholder": "First Name"}),
-            "last_name": forms.TextInput(attrs={"placeholder": "First Name"}),
-            "username": forms.TextInput(attrs={"placeholder": "First Name"}),
-            "phone_number": forms.TextInput(attrs={"placeholder": "First Name"}),
+            "last_name": forms.TextInput(attrs={"placeholder": "Last Name"}),
+            "username": forms.TextInput(attrs={"placeholder": "Username"}),
+            "phone_number": forms.TextInput(attrs={"placeholder": "Phone Number"}),
             "email": forms.EmailInput(attrs={"placeholder": "Email"}),
             "birth_date": forms.DateInput(attrs={"placeholder": "yyyy-mm-dd"}),
         }
