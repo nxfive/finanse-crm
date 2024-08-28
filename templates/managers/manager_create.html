@@ -15,7 +15,7 @@
                     <p><i class="fa-solid fa-user"></i> {{ form.user }}</p>
                 </div>
                 <div class="model-element-action">
-                    <a href=""><i class="fa-solid fa-arrow-left"></i>Managers</a>
+                    <a href="{% url 'managers:manager-list' %}"><i class="fa-solid fa-arrow-left"></i>Managers</a>
                     <button type="submit" class="btn-agent-up">Create</button>
                 </div>
             </form>
