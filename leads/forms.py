@@ -3,6 +3,7 @@ from django import forms
 
 from .models import Lead
 from agents.models import Agent
+from teams.models import Team
 from core.validators import validate_phone_number, validate_name, validate_team_agent
 
 
@@ -105,3 +106,28 @@ class CompanyLeadCreateForm(forms.ModelForm):
             "phone_number": forms.TextInput(attrs={"placeholder": "Enter your phone number"}),
             "message": forms.Textarea(attrs={"placeholder": "Enter your message"}),
         }
+
+
+class LeadAssignTeamForm(forms.Form):
+    team = forms.ModelChoiceField(queryset=Team.objects.none())
+
+    def __init__(self, *args, **kwargs):
+        lead = kwargs.pop("lead", None)
+        super().__init__(*args, **kwargs)
+        self.fields["team"].empty_label = "Select Team"
+
+        if lead.status != Lead.LeadStatus.FOLLOW_UP:
+            self.fields["team"].queryset = Team.objects.filter(team_type=Team.TeamTypes.SUPPORT, companies=lead.company)
+        else:
+            self.fields["team"].queryset = Team.objects.filter(team_type=Team.TeamTypes.SALES, companies=lead.company)
+
+
+class LeadAssignAgentForm(forms.Form):
+    agent = forms.ModelChoiceField(queryset=Agent.objects.none())
+
+    def __init__(self, *args, **kwargs):
+        lead = kwargs.pop("lead", None)
+        super().__init__(*args, **kwargs)
+        self.fields["agent"].empty_label = "Select Agent"
+
+        self.fields["agent"].queryset = Agent.objects.filter(team=lead.team, companies=lead.company)
