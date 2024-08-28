@@ -1,0 +1,78 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+
+{% block content %}
+
+<div class="model-container">
+    <div class="title">
+        <h1>Lead assign agent</h1>
+    </div>
+    <div class="model-cont">
+        <div class="model-content">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="model-element-up">
+                    <p><i class="fa-solid fa-user"></i> {{ lead }}</p>
+                </div>
+                <div class="model-element-up">
+                    <p><i class="fa-solid fa-user-tie"></i> {{ form.agent }}</p>
+                </div>
+                <div class="model-element-action">
+                    <a href="{% url 'leads:lead-detail' lead.pk %}"><i class="fa-solid fa-arrow-left"></i>Details</a>
+                    <button type="submit" class="btn-agent-up">Assign</button>
+                </div>
+            </form>
+        </div>
+        <div class="model-action-cont">
+            <ul>
+                {% if user.is_superuser %}
+                <li>
+                    <a href="">
+                        <h3>Assign Team</h3>
+                        <p class="det-icon"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-people-group"></i></p>
+                    </a>
+                </li>
+                {% endif %}
+                <li>
+                    {% if user.is_superuser %}
+                    <a href="{% url 'leads:lead-detail' lead.pk %}">
+                    {% elif manager %}
+                    <a href="{% url 'teams:leads:lead-detail' team.slug lead.pk %}">
+                    {% else %}
+                    <a href="{% url 'teams:leads:my-lead-detail' team.slug lead.pk %}">
+                    {% endif %}
+                        <h3>Lead Details</h3>
+                        <p class="det-icon"><i class="fa-solid fa-info"></i></p>
+                    </a>
+                </li>
+                <li>
+                    {% if user.is_superuser %}
+                    <a href="{% url 'leads:lead-update' lead.pk %}">
+                    {% elif manager %}
+                    <a href="{% url 'teams:leads:lead-update' team.slug lead.pk %}">
+                    {% else %}
+                    <a href="{% url 'teams:leads:my-lead-update' team.slug lead.pk %}">
+                    {% endif %}
+                        <h3>Update Lead</h3>
+                        <p class="det-icon"><i class="fa-solid fa-pen-to-square"></i></p>
+                    </a>
+                </li>
+                <li>
+                    {% if user.is_superuser %}
+                    <a href="{% url 'leads:lead-delete' lead.pk %}">
+                    {% elif manager %}
+                    <a href="{% url 'teams:leads:lead-delete' team.slug lead.pk %}">
+                    {% else %}
+                    <a href="{% url 'teams:leads:my-lead-delete' team.slug lead.pk %}">
+                    {% endif %}
+                        <h3>Delete Lead</h3>
+                        <p class="det-icon"><i class="fa-solid fa-trash"></i></p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
