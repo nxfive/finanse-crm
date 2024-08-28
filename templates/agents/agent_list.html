@@ -5,14 +5,20 @@
 
 <div class="lead-list">
     <div class="title">
-        <h1>Agents</h1>
+            {% if team.slug in request.path %}
+            <h1>Agents <br>{{ team.team_type }} {{ team.name }}</h1>
+            {% elif team.slug not in request.path %}
+            <h1>Agents</h1>
+            {% endif %}
     </div>
     {% include "alerts.html" %}
     <div class="list-container">
         <div class="list-icons">
             {% if user.is_superuser %}
             <a href="{% url 'agents:agent-create' %}">Create</a>
-            {% elif user.is_manager %}
+            {% elif team.slug in request.path %}
+            <a href="{% url 'agents:agent-list' %}">Agents</a>
+            {% elif team.slug not in request.path %}
             <a href="{% url 'teams:agents:agent-list' team.slug %}">My Team Agents</a>
             {% endif %}
         </div>
