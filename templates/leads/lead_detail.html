@@ -7,6 +7,7 @@
     <div class="title">
         <h1>Lead details</h1>
     </div>
+    {% include "alerts.html" %}
     <div class="model-cont">
         <div class="model-content-field">
             <div class="model-cont-nav">
@@ -86,6 +87,48 @@
         </div>
         <div class="model-action-cont">
             <ul>
+                {% if user.is_superuser %}
+                <li>
+                    {% if not lead.team %}
+                    <a href="{% url 'leads:lead-assign-team' lead.pk %}">
+                        <h3>Assign Team</h3>
+                        <p class="det-icon"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-people-group"></i></p>
+                    </a>
+                    {% else %}
+                    <a href="{% url 'leads:lead-unassign-team' lead.pk %}">
+                        <h3>Unassign Team</h3>
+                        <p class="det-icon"><i class="fa-solid fa-minus"></i><i class="fa-solid fa-people-group"></i></p>
+                    </a>
+                    {% endif %}
+                </li>
+                <li>
+                    {% if not lead.agent %}
+                    <a href="{% url 'leads:lead-assign-agent' lead.pk %}">
+                        <h3>Assign Agent</h3>
+                        <p class="det-icon"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-user-tie"></i></p>
+                    </a>
+                    {% else %}
+                    <a href="{% url 'leads:lead-unassign-agent' lead.pk %}">
+                        <h3>Unassign Agent</h3>
+                        <p class="det-icon"><i class="fa-solid fa-minus"></i><i class="fa-solid fa-user-tie"></i></p>
+                    </a>
+                    {% endif %}
+                </li>
+                {% elif user.is_manager %}
+                <li>
+                    {% if not lead.agent %}
+                    <a href="{% url 'teams:leads:lead-assign-agent' team.slug lead.pk %}">
+                        <h3>Assign Agent</h3>
+                        <p class="det-icon"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-user-tie"></i></p>
+                    </a>
+                    {% else %}
+                    <a href="{% url 'teams:leads:lead-unassign-agent' team.slug lead.pk %}">
+                        <h3>Unassign Agent</h3>
+                        <p class="det-icon"><i class="fa-solid fa-minus"></i><i class="fa-solid fa-user-tie"></i></p>
+                    </a>
+                    {% endif %}
+                </li>
+                {% endif %}
                 <li>
                     {% if user.is_superuser %}
                     <a href="{% url 'leads:lead-update' lead.pk %}">
