@@ -46,7 +46,7 @@
                             <a class="action-detail" href="{% url 'companies:company-detail' company.slug %}">Details</a>
                             <a class="action-update" href="{% url 'companies:company-update' company.slug %}">Update</a>
                             <a class="action-delete" href="{% url 'companies:company-delete' company.slug %}">Delete</a>
-                            {% elif manager and team.manager.user == request.user %}
+                            {% elif user_team and user_team.manager.user == user and user_team in company.teams.all %}
                             <a class="action-detail" href="{% url 'teams:companies:company-detail' team.slug company.slug %}">Details</a>
                             {% else %}
                             <i class="fa-solid fa-xmark"></i>
