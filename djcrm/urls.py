@@ -10,4 +10,5 @@ urlpatterns = [
     path("managers/", include("managers.urls")),
     path("site/", include("companies.websites_urls")),
     path("companies/", include("companies.urls")),
+    path("clients/", include("clients.urls")),
 ]
