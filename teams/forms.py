@@ -37,8 +37,8 @@ class TeamForm(forms.ModelForm):
         instance = self.instance
 
         if instance.pk:
-            original_team = Team.objects.get(pk=instance.pk)
-            if original_team.agents.exists() and original_team.team_type != team_type:
+            db_team = Team.objects.get(pk=instance.pk)
+            if db_team.agents.exists() and db_team.team_type != team_type:
                 raise ValidationError("Cannot change 'team type' when team already has agents.")
 
         return cleaned_data
