@@ -26,7 +26,19 @@ def check_companies_to_process(
         return redirect("teams:agents:agent-detail", team.slug, agent.pk)
 
 
+def validate_team(request: HttpRequest, team_slug: str) -> bool | HttpResponseRedirect:
+    """for agents and manager"""
+    team = get_object_or_404(Team, slug=team_slug)
+
+    if not team.is_user_member(request.user):
+        messages.error(request, f"You are not a member of the {team.name} team.")
+        return redirect("agents:agent-list")
+
+    return True
+
+
 def validate_team_and_agent(request: HttpRequest, team_slug: str, agent_pk: int) -> Tuple[Team, Agent] | HttpResponseRedirect:
+    """for managers"""
     team = get_object_or_404(Team, slug=team_slug)
 
     if team.manager.user != request.user:
