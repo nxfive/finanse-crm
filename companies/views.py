@@ -17,7 +17,7 @@ from django.views.generic import (
     DetailView,
     DeleteView,
 )
-
+from django_ratelimit.decorators import ratelimit
 from .utils import company_lead_create, unassign_from_company, assign_to_company
 from .models import Company
 from .forms import (
@@ -34,6 +34,7 @@ from core.mixins import AdminRequiredMixin
 from core.decorators import check_user_team
 
 
+@ratelimit(key="ip", rate="5/d", method="POST", block=True)
 def bank_finanse_create(request: HttpRequest) -> HttpResponse:
     return company_lead_create(
         request=request,
@@ -46,6 +47,7 @@ def bank_finanse_sent(request: HttpRequest) -> HttpResponse:
     return render(request=request, template_name="websites/bank_finanse_sent.html")
 
 
+@ratelimit(key="ip", rate="5/d", method="POST", block=True)
 def house_finder_create(request: HttpRequest) -> HttpResponse:
     return company_lead_create(
         request=request,
