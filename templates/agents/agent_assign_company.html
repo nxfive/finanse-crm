@@ -1,0 +1,60 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+
+{% block content %}
+
+<div class="model-container">
+    <div class="title">
+        <h1>Company Assign</h1>
+    </div>
+    <div class="model-cont">
+        <div class="model-content">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="model-element-up">
+                    <p>Agent: {{ agent }}</p>
+                </div>
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Companies</p><p> {{ form.companies }}</p>
+                    </div>
+                </div>
+                <div class="model-element-action">
+                    <a href="{% url 'agents:agent-detail' agent.pk %}"><i class="fa-solid fa-arrow-left"></i>Details</a>
+                    <button type="submit" class="btn-agent-up">Assign</button>
+                </div>
+            </form>
+        </div>
+        <div class="model-action-cont">
+            <ul>
+                <li>
+                    {% if user.is_superuser %}
+                    <a href="{% url 'agents:agent-detail' agent.pk %}">
+                    {% elif manager and team.manager.user == request.user %}
+                    <a href="{% url 'teams:agents:agent-detail' team.slug agent.pk %}">
+                        <h3>Agent Details</h3>
+                        <p class="det-icon"><i class="fa-solid fa-info"></i></p>
+                    </a>
+                    {% endif %}
+                </li>
+                {% if user.is_superuser %}
+                <li>
+                    <a href="{% url 'agents:agent-update' agent.pk %}">
+                        <h3>Update Agent</h3>
+                        <p class="det-icon"><i class="fa-solid fa-pen-to-square"></i></p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'agents:agent-delete' agent.pk %}">
+                        <h3>Delete Agent</h3>
+                        <p class="det-icon"><i class="fa-solid fa-trash"></i></p>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
