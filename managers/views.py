@@ -1,3 +1,8 @@
+from typing import Any
+from django.core.exceptions import PermissionDenied
+from django.http import HttpRequest
+from django.http.response import HttpResponse
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DeleteView, CreateView, DetailView
@@ -28,3 +33,11 @@ class ManagerCreateView(LoginRequiredMixin, AdminRequiredMixin, CreateView):
 class ManagerDetailView(LoginRequiredMixin, DetailView):
     model = Manager
     template_name = "managers/manager_detail.html"
+
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        manager = get_object_or_404(Manager, pk=kwargs.get("pk"))
+
+        if request.user.is_superuser or manager.user == request.user:
+            return super().dispatch(request, *args, **kwargs)            
+            
+        raise PermissionDenied("You do not have access to view this manager.")
