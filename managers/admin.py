@@ -8,19 +8,14 @@ from core.admin import BaseUserAdmin
 class ManagerAdmin(BaseUserAdmin):
     form = ManagerForm
     list_display = BaseUserAdmin.list_display + (
-        "get_team",
+        "team",
         "get_agents_amount",
     )
-
-    def get_team(self, obj: Manager) -> str | None:
-        if obj:
-            return obj.team
 
     def get_agents_amount(self, obj: Manager) -> int | None:
         if obj:
             return len(obj.team.agents.all())
 
-    get_team.short_description = "Team"
     get_agents_amount.short_description = "Agents"
 
     ordering = ("team", "user__last_name")
