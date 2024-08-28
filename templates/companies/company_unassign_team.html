@@ -1,0 +1,57 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="model-container">
+    <div class="title">
+        <h1>Company: Unassign Team</h1>
+    </div>
+    <div class="model-cont">
+        <div class="model-content-field">
+            <div class="model-content">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="model-element">
+                        <p><b>Company: {{ company.name }}</b></p>
+                    </div>
+                    <div class="model-element">
+                        <div class="as-icone-container">
+                            <p class="as-icone">Teams</p><p> {{ form.teams }}</p>
+                        </div>
+                    </div>
+                    <div class="model-element-action">
+                        <a href="{% url 'companies:company-list' %}"><i class="fa-solid fa-arrow-left"></i>Companies</a>
+                        <button type="submit" class="btn-agent-up">Unassign</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="model-action-cont">
+            <ul>
+                {% if user.is_superuser %}
+                <li>
+                    <a href="{% url 'companies:company-detail' company.slug %}">
+                        <h3>Company Details</h3>
+                        <p class="det-icon"><i class="fa-solid fa-info"></i></p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'companies:company-update' company.slug %}">
+                        <h3>Update Company</h3>
+                        <p class="det-icon"><i class="fa-solid fa-pen-to-square"></i></p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'companies:company-delete' company.slug %}">
+                        <h3>Delete Company</h3>
+                        <p class="det-icon"><i class="fa-solid fa-trash"></i></p>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
