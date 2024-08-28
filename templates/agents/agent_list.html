@@ -7,9 +7,14 @@
     <div class="title">
         <h1>Agents</h1>
     </div>
+    {% include "alerts.html" %}
     <div class="list-container">
         <div class="list-icons">
+            {% if user.is_superuser %}
             <a href="{% url 'agents:agent-create' %}">Create</a>
+            {% elif user.is_manager %}
+            <a href="{% url 'teams:agents:agent-list' team.slug %}">My Team Agents</a>
+            {% endif %}
         </div>
         <div class="lead-content">
             <table class="content-table">
@@ -32,9 +37,15 @@
                         <td>{{ agent.user.email }}</td>
                         <td>{{ agent.user.date_joined }}</td>
                         <td class="action">
+                            {% if user.is_superuser %}
                             <a class="action-detail" href="{% url 'agents:agent-detail' agent.pk %}">Details</a>
                             <a class="action-update" href="{% url 'agents:agent-update' agent.pk %}">Update</a>
                             <a class="action-delete" href="{% url 'agents:agent-delete' agent.pk %}">Delete</a>
+                            {% elif agent.team.manager.user == user %}
+                            <a class="action-detail" href="{% url 'teams:agents:agent-detail' team.slug agent.pk %}">Details</a>
+                            {% else %}
+                            <i class="fa-solid fa-xmark"></i>
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}
