@@ -1,0 +1,53 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+
+{% block content %}
+
+<div class="model-container">
+    <div class="title">
+        <h1>Team assign team</h1>
+    </div>
+    <div class="model-cont">
+        <div class="model-content">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="model-element-up">
+                    <p><i class="fa-solid fa-user"></i> {{ lead }}</p>
+                </div>
+                <div class="model-element-up">
+                    <p><i class="fa-solid fa-people-group"></i> {{ form.team }}</p>
+                </div>
+                {{ form.non_field_errors }}
+                <div class="model-element-action">
+                    <a href="{% url 'leads:lead-detail' lead.pk %}"><i class="fa-solid fa-arrow-left"></i>Details</a>
+                    <button type="submit" class="btn-agent-up">Assign</button>
+                </div>
+            </form>
+        </div>
+        <div class="model-action-cont">
+            <ul>
+                <li>
+                    <a href="{% url 'leads:lead-detail' lead.pk %}">
+                        <h3>Lead Details</h3>
+                        <p class="det-icon"><i class="fa-solid fa-info"></i></p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'leads:lead-update' lead.pk %}">
+                        <h3>Update Lead</h3>
+                        <p class="det-icon"><i class="fa-solid fa-pen-to-square"></i></p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'leads:lead-delete' lead.pk %}">
+                        <h3>Delete Lead</h3>
+                        <p class="det-icon"><i class="fa-solid fa-trash"></i></p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}s
