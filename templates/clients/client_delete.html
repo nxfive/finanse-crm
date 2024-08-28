@@ -1,0 +1,110 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="model-container">
+    <div class="title">
+        <h1>Client details</h1>
+    </div>
+    <div class="model-cont">
+        <div class="model-content-field">
+            <div class="model-content">
+                <div class="model-element">
+                    <p>Client: {{ client.first_name }} {{ client.last_name }}</p>
+                    <p><i class="fa-solid fa-cake-candles"></i> {{ client.birth_date }}</p>
+                </div>
+                <div class="model-element">
+                    <p><i class="fa-solid fa-envelope"></i> {{ client.email }}</p>
+                    <p><i class="fa-solid fa-phone"></i> {{ client.phone_number }}</p>
+                </div>
+                <div class="model-element">
+                    <p><i class="fa-solid fa-people-group"></i> {{ client.agent.team }}</p>
+                    <p><i class="fa-solid fa-user-tie"></i> {{ client.agent }}</p>
+                </div>
+            </div>
+            <div class="model-content">
+                <div class="model-element">
+                    <h3>Financial Profile</h3>
+                </div>
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Employer</p><p> {{ client.employer }}</p>
+                    </div>
+                    <div class="as-icone-container">
+                        <p class="as-icone">Source Of Income</p><p> {{ client.source_of_income }}</p>
+                    </div>
+                </div>
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Type</p><p> {{ client.employment_type }}</p>
+                    </div>
+                    <div class="as-icone-container">
+                        <p class="as-icone">Salary</p><p> {{ client.salary }}</p>
+                    </div>
+                </div>
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Start Date</p><p> {{ client.employment_start_date }}</p>
+                    </div>
+                    <div class="as-icone-container">
+                        <p class="as-icone">End Date</p><p> {{ client.employment_end_date }}</p>
+                    </div>
+                </div>
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Liabilities</p><p> {{ client.liabilities }}</p>
+                    </div>
+                    <div class="as-icone-container">
+                        <p class="as-icone">Living Expenses</p><p> {{ client.living_expenses }}</p>
+                    </div>
+                </div>
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Rate per month</p><p> {{ client.rate_per_month }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="model-action-cont">
+            <ul>
+                {% if user.is_superuser %}
+                <li>
+                    <a href="{% url 'clients:client-update' client.pk %}">
+                        <h3>Update Client</h3>
+                        <p class="det-icon"><i class="fa-solid fa-pen-to-square"></i></p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'clients:client-delete' client.pk %}">
+                        <h3>Delete Client</h3>
+                        <p class="det-icon"><i class="fa-solid fa-trash"></i></p>
+                    </a>
+                </li>
+                {% elif manager and client.agent.team.manager.user == request.user%}
+                <li>
+                    <a href="{% url 'teams:clients:client-update' team.slug client.pk %}">
+                        <h3>Update Client</h3>
+                        <p class="det-icon"><i class="fa-solid fa-pen-to-square"></i></p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'teams:clients:client-delete' team.slug client.pk %}">
+                        <h3>Delete Client</h3>
+                        <p class="det-icon"><i class="fa-solid fa-trash"></i></p>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+            <div class="model-del-cont">
+                <h3>Are you sure you want to delete this client?</h3>
+                <form method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-delete-sub">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
