@@ -1,0 +1,102 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="model-container">
+    <div class="title">
+        <h1>Sale create</h1>
+    </div>
+    {% include "alerts.html" %}
+    <div class="model-cont-sale">
+        <div class="sale-container">
+            <div class="model-content max-heigh">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="model-element">
+                        <div class="as-icone-container">
+                            <p class="as-icone">Client</p><p>{{ form.client }}</p>
+                        </div>
+                    </div>
+                    <div class="model-element">
+                        <div class="as-icone-container">
+                            <p class="as-icone">Product</p><p>{{ form.bank_product }}</p>
+                        </div>
+                        <div class="as-icone-container">
+                            <p class="as-icone">Amount</p><p>{{ form.amount }}</p>
+                        </div>
+                    </div>
+                    <div class="model-element">
+                        <div class="as-icone-container">
+                            <p class="as-icone">Duration [years]</p><p>{{ form.duration_years }}</p>
+                        </div>
+                    </div>
+                    <div class="model-element-action">
+                        <button type="submit" class="btn-usual-up" name="action" value="calculate">Calculate Rate</button> 
+                        <button type="submit" class="btn-agent-up" name="action" value="create">Create Sale</button>
+                    </div>
+                </form>
+            </div>
+            <div class="model-content">
+                <div class="model-element">
+                    <h3>Sales</h3>
+                </div>
+                <div class="sale-content-table">
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th>Bank/Product</th>
+                                <th>Amount [$]</th>
+                                <th>Duration [years]</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if client.sales.exists %}
+                                {% for sale in client.sales.all %}
+                                <tr>
+                                    <td>{{ sale.bank_product }}</td>
+                                    <td>{{ sale.amount }}</td>
+                                    <td>{{ sale.duration_years }}</td>
+                                    <td>{{ sale.status }}</td>
+                                </tr>
+                                {% endfor %}
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="model-content">
+            <div class="model-element">
+                <h3>Calculations</h3>
+            </div>
+            <div class="calc-content-table">
+                <table class="content-table">
+                    <thead>
+                        <tr>
+                            <th>Bank/Product</th>
+                            <th>Amount [$]</th>
+                            <th>Duration [years]</th>
+                            <th>Rate [$]</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if client.calculations.exists %}
+                            {% for calculation in client.calculations.all %}
+                            <tr>
+                                <td>{{ calculation.bank_product }}</td>
+                                <td>{{ calculation.amount }}</td>
+                                <td>{{ calculation.duration_years }}</td>
+                                <td>{{ calculation.rate }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
