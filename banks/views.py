@@ -4,13 +4,14 @@ from django.shortcuts import get_object_or_404, render
 
 from .models import Bank, BankProduct
 from .utils import process_bank, process_bank_product, user_authorized
+from core.utils import paginate_queryset
 
 
 @login_required
 def list_banks(request: HttpRequest) -> HttpResponse:
     if not user_authorized:
         raise Http404
-    return render(request, "banks/bank_list.html", {"banks": Bank.objects.all()})
+    return render(request, "banks/bank_list.html", {"banks": paginate_queryset(request, Bank.objects.all(), 8)})
     
 
 @login_required
@@ -53,7 +54,7 @@ def delete_bank(request: HttpRequest, pk: int) -> HttpResponse:
 def list_banks_products(request: HttpRequest) -> HttpResponse:
     if not user_authorized:
         raise Http404
-    return render(request, "banks/bank_product_list.html", {"products": BankProduct.objects.all()})
+    return render(request, "banks/bank_product_list.html", {"products": paginate_queryset(request, BankProduct.objects.all(), 8)})
 
 
 @login_required
