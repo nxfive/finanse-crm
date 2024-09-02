@@ -13,10 +13,8 @@ from .views import (
     delete_bank_product
 )
 
-from .viewsf import list_banks
 
 app_name = "banks"
-
 
 
 urlpatterns = [
