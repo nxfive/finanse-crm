@@ -119,25 +119,24 @@ def update_company(request: HttpRequest, company_slug: str) -> HttpResponse:
         return redirect("companies:company-detail", company_slug=company.slug)
     else:
         form = CompanyForm(instance=company)
-        
+
     return render(request, "companies/company_update.html", {"form": form, "company": company})
 
 
-class CompanyDeleteView(LoginRequiredMixin, AdminRequiredMixin, DeleteView):
-    template_name = "companies/company_delete.html"
-    success_url = reverse_lazy("companies:company-list")
-    context_object_name = "company"
+@login_required
+def delete_company(request: HttpRequest, company_slug: str) -> HttpResponse:
+    company = get_object_or_404(Company, slug=company_slug)
 
-    def get_object(self, queryset: QuerySet[Any] | None = ...) -> Model:
-        return get_object_or_404(Company, slug=self.kwargs.get("company_slug"))
+    if not request.user.is_superuser:
+        raise Http404
+    
+    if request.method == "POST":
+        company.delete()
+        messages.info(request, "Company successfully deleted")
+        return redirect("companies:company-list")
 
-    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        try:
-            self.object = self.get_object()
-        except Http404:
-            messages.error(request, "Company does not exist.")
-            return redirect("companies:company-list")
-        return super().dispatch(request, *args, **kwargs)
+    return render(request, "companies/company_delete.html", {"company": company})
+
 
 
 class CompanyTeamsListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
