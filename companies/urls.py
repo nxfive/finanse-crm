@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (
     list_companies,
     CompanyCreateView, 
-    CompanyDetailView, 
+    get_company, 
     CompanyUpdateView, 
     CompanyDeleteView, 
     CompanyLeadsListView, 
@@ -20,7 +20,7 @@ app_name = "companies"
 urlpatterns = [
     path("", list_companies, name="company-list"),
     path("create/", CompanyCreateView.as_view(), name="company-create"),
-    path("<slug:company_slug>/", CompanyDetailView.as_view(), name="company-detail"),
+    path("<slug:company_slug>/", get_company, name="company-detail"),
     path("<slug:company_slug>/update/", CompanyUpdateView.as_view(), name="company-update"),
     path("<slug:company_slug>/delete/", CompanyDeleteView.as_view(), name="company-delete"),
     path("<slug:company_slug>/leads/", CompanyLeadsListView.as_view(), name="company-leads"),

@@ -78,6 +78,17 @@ def list_companies(request: HttpRequest, team_slug: Optional[str] = None, **kwar
     return render(request, "companies/company_list.html", {"companies": paginate_queryset(request, queryset, 8), "user_team": team})
     
 
+@login_required
+def get_company(request: HttpRequest, company_slug: str, team_slug: Optional[str] = None) -> HttpResponse:
+    company = get_object_or_404(Company, slug=company_slug)
+    team = get_object_or_404(Team, slug=team_slug)
+
+    if not request.user.is_superuser and team.manager.user != request.user:
+        raise Http404
+
+    return render(request, "companies/company_detail.html", {"company": company})
+
+
 class CompanyCreateView(LoginRequiredMixin, AdminRequiredMixin, CreateView):
     template_name = "companies/company_create.html"
     form_class = CompanyForm
@@ -86,24 +97,6 @@ class CompanyCreateView(LoginRequiredMixin, AdminRequiredMixin, CreateView):
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         messages.success(self.request, "Company successfully created")
         return super().form_valid(form)
-
-
-class CompanyDetailView(LoginRequiredMixin, DetailView):
-    template_name = "companies/company_detail.html"
-    context_object_name = "company"
-
-    def get_object(self, queryset: QuerySet[Any] | None = ...) -> Model:
-        return get_object_or_404(Company, slug=self.kwargs.get("company_slug"))
-
-    @method_decorator(check_user_team)
-    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        self.team = kwargs.pop("team", None)
-        try:
-            self.object = self.get_object()
-        except Http404:
-            messages.error(request, "Company does not exist.")
-            return redirect("companies:company-list")
-        return super().dispatch(request, *args, **kwargs)
 
 
 class CompanyUpdateView(LoginRequiredMixin, AdminRequiredMixin, UpdateView):
