@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (
     list_companies,
-    CompanyCreateView, 
+    create_company, 
     get_company, 
     CompanyUpdateView, 
     CompanyDeleteView, 
@@ -19,7 +19,7 @@ app_name = "companies"
 
 urlpatterns = [
     path("", list_companies, name="company-list"),
-    path("create/", CompanyCreateView.as_view(), name="company-create"),
+    path("create/", create_company, name="company-create"),
     path("<slug:company_slug>/", get_company, name="company-detail"),
     path("<slug:company_slug>/update/", CompanyUpdateView.as_view(), name="company-update"),
     path("<slug:company_slug>/delete/", CompanyDeleteView.as_view(), name="company-delete"),

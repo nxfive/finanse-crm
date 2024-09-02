@@ -89,14 +89,20 @@ def get_company(request: HttpRequest, company_slug: str, team_slug: Optional[str
     return render(request, "companies/company_detail.html", {"company": company})
 
 
-class CompanyCreateView(LoginRequiredMixin, AdminRequiredMixin, CreateView):
-    template_name = "companies/company_create.html"
-    form_class = CompanyForm
-    success_url = reverse_lazy("companies:company-list")
+@login_required
+def create_company(request: HttpRequest) -> HttpResponse:
+    if not request.user.is_superuser:
+        raise Http404
+    
+    if request.method == "POST":
+        form = CompanyForm(request.POST)
+        if form.is_valid():
+            company = form.save()
+            return redirect("companies:company-detail", company_slug=company.slug)
+    else:
+        form = CompanyForm()
 
-    def form_valid(self, form: BaseModelForm) -> HttpResponse:
-        messages.success(self.request, "Company successfully created")
-        return super().form_valid(form)
+    return render(request, "companies/company_create.html", {"form": form})
 
 
 class CompanyUpdateView(LoginRequiredMixin, AdminRequiredMixin, UpdateView):
