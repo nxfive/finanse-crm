@@ -20,3 +20,14 @@ class Sale(models.Model):
 
     def __str__(self):
         return f"Sale {self.id} - {self.client} - {self.bank_product}"
+
+
+class Calculation(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name="calculations")
+    bank_product = models.ForeignKey(BankProduct, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    duration_years = models.PositiveIntegerField()
+    rate = models.DecimalField(max_digits=12, decimal_places=2, null=True)
+
+    class Meta:
+        ordering = ("bank_product__bank", "duration_years")
