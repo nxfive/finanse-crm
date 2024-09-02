@@ -1,15 +1,9 @@
-from typing import Any, Optional
+from typing import Optional
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models.base import Model as Model
-from django.db.models.query import QuerySet
 from django.core.exceptions import PermissionDenied
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.generic import (
-    ListView,
-)
 from django_ratelimit.decorators import ratelimit
 from .utils import company_lead_create, unassign_from_company, assign_to_company
 from .models import Company
@@ -21,9 +15,7 @@ from .forms import (
     CompanyUnassignTeamsForm,
 )
 from teams.models import Team
-from leads.models import Lead
 from core.utils import paginate_queryset
-from core.mixins import AdminRequiredMixin
 from core.decorators import check_user_team
 
 
@@ -141,23 +133,14 @@ def list_company_teams(request: HttpRequest, company_slug: str) -> HttpResponse:
     return render(request, "companies/company_teams_list.html", {"company": company, "teams": paginate_queryset(request, company.teams.all(), 8)})
 
 
-class CompanyLeadsListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
-    template_name = "companies/company_leads_list.html"
-    context_object_name = "leads"
-    slug_field = "slug"
-    slug_url_kwarg = "company_slug"
-    paginate_by = 8
+@login_required
+def list_company_leads(request: HttpRequest, company_slug: str) -> HttpResponse:
+    company = get_object_or_404(Company, slug=company_slug)
 
-    def get_queryset(self) -> QuerySet[Any]:
-        return Lead.objects.filter(company__slug=self.kwargs["company_slug"]).all()
-
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        context["company"] = Company.objects.get(slug=self.kwargs["company_slug"])
-        context["leads"] = paginate_queryset(
-            request=self.request, queryset=self.get_queryset(), pages=self.paginate_by
-        )
-        return context
+    if not request.user.is_superuser:
+        raise Http404
+    
+    return render(request, "companies/company_leads_list.html", {"company": company, "leads": paginate_queryset(request, company.leads.all(), 8)})
 
 
 @login_required
