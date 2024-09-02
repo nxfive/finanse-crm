@@ -5,22 +5,12 @@
 
 <div class="lead-list">
     <div class="title">
-        {% if team.slug in request.path %}
-        <h1>My Clients</h1>
-        {% elif team.slug not in request.path %}
         <h1>Clients</h1>
-        {% endif %}
     </div>
     {% include 'alerts.html' %}
     <div class="list-container">
         <div class="list-icons">
-            {% if user.is_superuser %}
-            <a href="">Create</a>
-            {% elif team.slug in request.path %}
-            <a href="{% url 'clients:client-list' %}">Clients</a>
-            {% elif team.slug not in request.path %}
-            <a href="{% url 'team:clients:client-list' team.slug %}">My Team Clients</a>
-            {% endif %}
+            <a href="{% url 'clients:client-create' %}">Create</a>
         </div>
         <div class="lead-content">
             <table class="content-table">
@@ -43,18 +33,15 @@
                         <td>{{ client.phone_number }}</td>
                         <td>{{ client.email }}</td>
                         <td>{{ client.birth_date }}</td>
-                        <td>{{ client.agent }}</td>
+                        <td>{{ client.user }}</td>
                         <td class="action">
                             {% if user.is_superuser %}
                             <a class="action-detail" href="{% url 'clients:client-detail' client.pk %}">Details</a>
                             <a class="action-update" href="{% url 'clients:client-update' client.pk %}">Update</a>
                             <a class="action-delete" href="{% url 'clients:client-delete' client.pk %}">Delete</a>
-                            {% elif manager %}
-                            <a class="action-detail" href="{% url 'teams:clients:client-detail' team.slug client.pk %}">Details</a>
-                            <a class="action-update" href="{% url 'teams:clients:client-update' team.slug client.pk %}">Update</a>
-                            {% elif only_agent %}
-                            <a class="action-detail" href="{% url 'teams:clients:my-client-detail' team.slug client.pk %}">Details</a>
-                            <a class="action-update" href="{% url 'teams:clients:my-client-update' team.slug client.pk %}">Update</a>
+                            {% elif client.team and client.team.manager.user == user or client.agent.user == user %}
+                            <a class="action-detail" href="{% url 'clients:client-detail' client.pk %}">Details</a>
+                            <a class="action-update" href="{% url 'clients:client-update' client.pk %}">Update</a>
                             {% else %}
                             <i class="fa-solid fa-xmark"></i>
                             {% endif %}
@@ -66,28 +53,28 @@
         </div>
     </div>
     <div class="page-pagination">
-        {% if paged_clients.has_other_pages %}
+        {% if clients.has_other_pages %}
         <ul class="pagination-items">
-            {% if paged_clients.has_previous %}
-            <li class="page-item"><a class="page-link" href="?page={{ paged_clients.previous_page_number }}"><i class="fa-solid fa-angle-left"></i></a></li>
+            {% if clients.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ clients.previous_page_number }}"><i class="fa-solid fa-angle-left"></i></a></li>
             {% else %}
             <li class="page-item disabled"><a class="page-link" href="#"><i class="fa-solid fa-angle-left"></i></a></li>
             {% endif %}
     
-            {% for i in paged_clients.paginator.page_range %}
-                {% if i == 1 or i == paged_clients.paginator.num_pages or i >= paged_clients.number|add:-2 and i <= paged_clients.number|add:2 %}
-                    {% if paged_clients.number == i %}
+            {% for i in clients.paginator.page_range %}
+                {% if i == 1 or i == clients.paginator.num_pages or i >= clients.number|add:-2 and i <= clients.number|add:2 %}
+                    {% if clients.number == i %}
                     <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
                     {% else %}
                     <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
                     {% endif %}
-                {% elif i == paged_clients.number|add:-3 or i == paged_clients.number|add:3 %}
+                {% elif i == clients.number|add:-3 or i == clients.number|add:3 %}
                     <li class="page-item disabled"><a class="page-link" href="#">...</a></li>
                 {% endif %}
             {% endfor %}
     
-            {% if paged_clients.has_next %}
-            <li class="page-item"><a class="page-link" href="?page={{ paged_clients.next_page_number }}"><i class="fa-solid fa-angle-right"></i></a></li>
+            {% if clients.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ clients.next_page_number }}"><i class="fa-solid fa-angle-right"></i></a></li>
             {% else %}
             <li class="page-item disabled"><a class="page-link" href="#"><i class="fa-solid fa-angle-right"></i></a></li>
             {% endif %}
