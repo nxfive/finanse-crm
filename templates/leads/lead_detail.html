@@ -75,6 +75,14 @@
                     <div class="as-icone-container">
                         <p class="as-icone">Status</p><p> {{ lead.status}} </p>
                     </div>
+                    <div class="as-icone-container">
+                        <p class="as-icone">To Sales</p><p> 
+                            {% if lead.sales_lead %}
+                            <i class="fa-solid fa-square-check"></i>
+                            {% else %}
+                            <i class="fa-solid fa-square-xmark"></i>
+                            {% endif %} </p>
+                    </div>
                 </div>
                 <div class="lead-msg">
                     <i class="fa-solid fa-note-sticky"></i>
@@ -147,6 +155,16 @@
                     {% endif %}
                         <h3>Delete Lead</h3>
                         <p class="det-icon"><i class="fa-solid fa-trash"></i></p>
+                    </a>
+                </li>
+                <li>
+                    {% if user.is_superuser %}
+                    <a href="{% url 'leads:lead-client' lead.pk %}">
+                    {% else %}
+                    <a href="{% url 'teams:leads:lead-client' team.slug lead.pk %}">
+                    {% endif %}
+                        <h3>Client Form</h3>
+                        <p class="det-icon"><i class="fa-solid fa-share-from-square"></i></p>
                     </a>
                 </li>
             </ul>
