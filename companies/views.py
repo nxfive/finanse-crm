@@ -81,9 +81,9 @@ def list_companies(request: HttpRequest, team_slug: Optional[str] = None, **kwar
 @login_required
 def get_company(request: HttpRequest, company_slug: str, team_slug: Optional[str] = None) -> HttpResponse:
     company = get_object_or_404(Company, slug=company_slug)
-    team = get_object_or_404(Team, slug=team_slug)
+    team = get_object_or_404(Team, slug=team_slug) if team_slug else None
 
-    if not request.user.is_superuser and team.manager.user != request.user:
+    if not request.user.is_superuser and not team or team and team.manager.user != request.user:
         raise Http404
 
     return render(request, "companies/company_detail.html", {"company": company})
