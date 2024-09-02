@@ -44,7 +44,7 @@ def process_bank(request: HttpRequest, template_name: str, pk: int=None) -> Http
     return render(request, template_name, {"bank_form": bank_form, "address_form": address_form})
 
 
-def user_authorized(request: HttpRequest) -> HttpResponse:
+def user_authorized(request: HttpRequest) -> bool:
     if not request.user.is_superuser:
         sales_manager_ids = Team.objects.filter(team_type=Team.TeamTypes.SALES).values_list("manager__user__id", flat=True)
         sales_agent_ids = Agent.objects.filter(team__team_type=Team.TeamTypes.SALES).values_list("user__id", flat=True)
