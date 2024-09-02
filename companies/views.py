@@ -60,34 +60,23 @@ def house_finder_sent(request: HttpRequest) -> HttpResponse:
     return render(request=request, template_name="websites/house_finder_sent.html")
 
 
-class CompanyListView(LoginRequiredMixin, ListView):
-    model = Company
-    template_name = "companies/company_list.html"
-    context_object_name = "companies"
-    slug_field = "slug"
-    slug_url_kwarg = "team_slug"
-    paginate_by = 8
+@login_required
+@check_user_team
+def list_companies(request: HttpRequest, team_slug: Optional[str] = None, **kwargs) -> HttpResponse:
+    team = kwargs.pop("team", None)
 
-    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        self.team = None
-        if self.kwargs.get("team_slug"):
-            self.team = get_object_or_404(Team, slug=self.kwargs["team_slug"])
-        return super().dispatch(request, *args, **kwargs)
+    if not request.user.is_superuser and not team:
+        raise Http404
 
-    def get_queryset(self) -> QuerySet[Any]:
-        if self.team:
-            return self.team.companies.all()
-        return Company.objects.all()
-
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        if self.team:
-            context["team"] = self.team
-        context["companies"] = paginate_queryset(
-            request=self.request, queryset=self.get_queryset(), pages=self.paginate_by
-        )
-        return context
-
+    if request.user.is_superuser:
+        queryset = Company.objects.all()
+    elif team:
+        queryset = team.companies.all()
+    else:
+        queryset = None
+    
+    return render(request, "companies/company_list.html", {"companies": paginate_queryset(request, queryset, 8), "user_team": team})
+    
 
 class CompanyCreateView(LoginRequiredMixin, AdminRequiredMixin, CreateView):
     template_name = "companies/company_create.html"
