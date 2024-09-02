@@ -5,6 +5,8 @@ from django.utils.translation import pgettext
 from django.utils.translation import gettext_lazy as _
 from datetime import datetime
 from agents.models import Agent
+from accounts.models import Account
+from teams.models import Team
 
 
 class Client(models.Model):
@@ -53,7 +55,8 @@ class Client(models.Model):
         ROYALTIES = "Royalties", _("Royalties")
         OTHER = "Other", _("Other")
 
-    agent = models.ForeignKey(Agent, on_delete=models.CASCADE)
+    user = models.ForeignKey(Account, on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     email = models.EmailField(unique=True)
@@ -68,6 +71,8 @@ class Client(models.Model):
     liabilities = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     living_expenses = models.DecimalField(max_digits=12, decimal_places=2)
     rate_per_month = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    creditworthiness = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    processing_date = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         ordering = ("last_name",)
