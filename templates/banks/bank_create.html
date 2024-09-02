@@ -1,0 +1,68 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+
+{% block content %}
+<div class="model-container">
+    <div class="title">
+        <h1>Bank create</h1>
+    </div>
+    <div class="model-cont">
+        <div class="model-content">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Name</p><p> {{ bank_form.name }}</p>
+                    </div>
+                </div>
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Headquarters</p><p> {{ bank_form.headquarters  }}</p>
+                    </div>
+                    <div class="as-icone-container">
+                        <p class="as-icone">Customer Service</p><p>  {{ bank_form.customer_service }}</p>
+                    </div>
+                </div>
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Established</p><p> {{ bank_form.established }}</p>
+                    </div>
+                    <div class="as-icone-container">
+                        <p class="as-icone">Chairman</p><p> {{ bank_form.chairman}}</p>
+                    </div>
+                </div>
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Street</p><p> {{ address_form.street_name  }}</p>
+                    </div>
+                    <div class="as-icone-container">
+                        <p class="as-icone">City</p><p> {{ address_form.city }}</p>
+                    </div>
+                </div>
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Building Number</p><p> {{ address_form.building_number  }}</p>
+                    </div>
+                    <div class="as-icone-container">
+                        <p class="as-icone">Apartment Number</p><p> {{ address_form.apartment_number }}</p>
+                    </div>
+                </div>
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Zip Code</p><p> {{ address_form.zip_code }}</p>
+                    </div>
+                    <div class="as-icone-container">
+                        <p class="as-icone">Country</p><p> {{ address_form.country }}</p>
+                    </div>
+                </div>
+                <div class="model-element-action">
+                    <a href="{% url 'banks:bank-list' %}"><i class="fa-solid fa-arrow-left"></i>Banks</a>
+                    <button type="submit" class="btn-agent-up">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
