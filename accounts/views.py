@@ -40,7 +40,7 @@ def login(request: HttpRequest) -> HttpResponse:
     return render(request, "accounts/login.html", {"form": form})
 
 
-def signup(request):
+def signup(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
         form = SignupForm(request.POST)
         if form.is_valid():
@@ -74,7 +74,7 @@ def signup(request):
     return render(request, "accounts/signup.html", {"form": form})
 
 
-def activate(request: HttpRequest, uidb64: str, token: str):
+def activate(request: HttpRequest, uidb64: str, token: str) -> HttpResponse:
     try:
         user = Account.objects.get(pk=force_str(urlsafe_base64_decode(uidb64)))
     except (TypeError, ValueError, OverflowError, Account.DoesNotExist):
@@ -106,7 +106,19 @@ def activate(request: HttpRequest, uidb64: str, token: str):
         messages.error(request, "The confirmation link was invalid.")
         return redirect("activation-invalid")
     
-    
+
+def activation_sent(request: HttpRequest) -> HttpResponse:
+    return render(request, "accounts/activation_sent.html")
+
+
+def activation_complete(request: HttpRequest) -> HttpResponse:
+    return render(request, "accounts/activation_complete.html")
+
+
+def activation_invalid(request: HttpRequest) -> HttpResponse:
+    return render(request, "accounts/activation_invalid.html")
+
+
 @login_required
 def list_accounts(request: HttpRequest) -> HttpResponse:
     return render(
