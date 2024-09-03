@@ -3,11 +3,12 @@ from django.shortcuts import render
 from django.core.mail import send_mail
 from django.contrib import auth, messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
 from django.shortcuts import redirect
 from .forms import LoginForm, SignupForm
-from .models import Account
+from .models import Account, UserProfile
 from core.utils import paginate_queryset
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -45,10 +46,10 @@ def signup(request: HttpRequest) -> HttpResponse:
         form = SignupForm(request.POST)
         if form.is_valid():
             if Account.objects.filter(email=form.cleaned_data["email"]).exists():
-                messages.info("Account with this email already exists.")
+                messages.info(request, "Account with this email already exists.")
                 return redirect("signup")
-
-            user = form.save()
+            
+            user = Account.objects.create(username=form.cleaned_data["username"], email=form.cleaned_data["email"])
 
             send_mail(
                 subject="Activate Your Account",
@@ -87,6 +88,8 @@ def activate(request: HttpRequest, uidb64: str, token: str) -> HttpResponse:
         temporary_password = get_random_string(length=12)
         user.set_password(temporary_password)
         user.save()
+
+        UserProfile.objects.create(user=user)
 
         send_mail(
             subject="Your Temporary Password",
@@ -130,3 +133,17 @@ def list_accounts(request: HttpRequest) -> HttpResponse:
             )
         },
     )
+
+
+@login_required
+def change_password(request: HttpRequest) -> HttpResponse:
+    if request.method == "POST":
+        form = PasswordChangeForm(request.POST, request.user)
+        if form.is_valid():
+            user = form.save()
+            auth.update_session_auth_hash(request, user)
+            messages.success(request, "Password successfully changed.")
+            return redirect("profile", username=request.user.username)
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, "accounts/password_change.html", {"form": form})
