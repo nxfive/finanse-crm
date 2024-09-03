@@ -12,6 +12,7 @@ from core.utils import paginate_queryset
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
+from django.utils.crypto import get_random_string
 
 
 @login_required
@@ -23,7 +24,11 @@ def login(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
-            user = auth.authenticate(request, username=form.cleaned_data["email"], password=form.cleaned_data["password"])
+            user = auth.authenticate(
+                request,
+                username=form.cleaned_data["email"],
+                password=form.cleaned_data["password"],
+            )
             if user:
                 auth.login(request, user)
                 return redirect("dashboard", username=user.username)
@@ -69,6 +74,39 @@ def signup(request):
     return render(request, "accounts/signup.html", {"form": form})
 
 
+def activate(request: HttpRequest, uidb64: str, token: str):
+    try:
+        user = Account.objects.get(pk=force_str(urlsafe_base64_decode(uidb64)))
+    except (TypeError, ValueError, OverflowError, Account.DoesNotExist):
+        user = None
+
+    if user and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.is_superuser = True
+
+        temporary_password = get_random_string(length=12)
+        user.set_password(temporary_password)
+        user.save()
+
+        send_mail(
+            subject="Your Temporary Password",
+            message=render_to_string(
+                "accounts/temporary_password_email.html",
+                {
+                    "user": user,
+                    "temporary_password": temporary_password,
+                },
+            ),
+            from_email="no-reply@bieniasdev.com",
+            recipient_list=[user.email],
+        )
+        messages.success(request, "Your account has been confirmed. Check your email for the temporary password.")
+        return redirect("activation-complete")
+    else:
+        messages.error(request, "The confirmation link was invalid.")
+        return redirect("activation-invalid")
+    
+    
 @login_required
 def list_accounts(request: HttpRequest) -> HttpResponse:
     return render(
