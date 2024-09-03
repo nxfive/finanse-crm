@@ -2,7 +2,7 @@ from typing import Any
 from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from .models import Account
+from .models import Account, UserProfile
 from core.validators import (
     validate_phone_number,
     validate_birth_date,
@@ -83,3 +83,9 @@ class LoginForm(forms.Form):
 class SignupForm(forms.Form):
     username = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Username"}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={"placeholder": "Email"}))
+
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ("image",)
