@@ -1,0 +1,15 @@
+{% block content %}
+
+Hi {{ user.username }},
+
+Please click the link below to verify your email address and complete the registration:
+
+{{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+
+Thank you,
+The Team
+
+This email was automatically generated. Please do not reply. 
+If you have any questions or need assistance, please contact us at support@bieniasdev.com.
+
+{% endblock %}
