@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<section>
+    <div class="login">
+        <h3>Sign <span>Up</span></h3>
+        {% include 'alerts.html' %}
+        <div>
+            Activation link has been sent to your address email.
+        </div>
+        <div class="yes-account">
+            Already have an account?
+            <a href="{% url 'login' %}">Login</a>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}
