@@ -3,7 +3,7 @@ from django.db import models
 
 
 class AccountManager(BaseUserManager):
-    def create_user(self, first_name, last_name, username, email, birth_date, password=None):
+    def create_user(self, first_name, last_name, username, email, birth_date=None, password=None):
         if not email:
             raise ValueError("User must have an email address")
         
@@ -23,12 +23,13 @@ class AccountManager(BaseUserManager):
         user.save(using=self._db)
         return user
     
-    def create_superuser(self, first_name, last_name, username, email, password):
+    def create_superuser(self, first_name, last_name, username, email, password, birth_date=None):
         user = self.create_user(
             first_name=first_name,
             last_name=last_name,
             username=username,
             email=self.normalize_email(email),
+            birth_date=birth_date,
             password=password,
         )
         
@@ -40,12 +41,12 @@ class AccountManager(BaseUserManager):
     
 
 class Account(AbstractBaseUser):
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    username = models.CharField(max_length=50, unique=True)
-    email = models.EmailField(max_length=100, unique=True)
-    phone_number = models.CharField(max_length=50, null=True, blank=True)
-    birth_date = models.DateField()
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    username = models.CharField(max_length=30, unique=True)
+    email = models.EmailField(max_length=50, unique=True)
+    phone_number = models.CharField(max_length=30, null=True, blank=True)
+    birth_date = models.DateField(null=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now=True)
 
