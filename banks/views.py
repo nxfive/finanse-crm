@@ -72,14 +72,14 @@ def create_bank_product(request: HttpRequest) -> HttpResponse:
     if not request.user.is_superuser:
         raise Http404
 
-    return process_bank_product(request, "banks/bank_product_create")
+    return process_bank_product(request, "banks/bank_product_create.html")
 
 
 @login_required
 def update_bank_product(request: HttpRequest, pk: int) -> HttpResponse:
     if not request.user.is_superuser:
         raise Http404
-    return process_bank_product(request, "banks/bank_product_update", pk)
+    return process_bank_product(request, "banks/bank_product_update.html", pk)
 
 
 @login_required
