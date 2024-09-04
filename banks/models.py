@@ -11,6 +11,9 @@ class Bank(models.Model):
     chairman = models.CharField(max_length=60)
     address = models.OneToOneField(Address, on_delete=models.SET_NULL, null=True, blank=True)
 
+    class Meta:
+        ordering = ("name",)
+
     def __str__(self):
         return self.name
 
@@ -27,6 +30,9 @@ class BankProduct(models.Model):
     description = models.TextField(blank=True, null=True)
     interest_rate = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
     terms = models.TextField(blank=True, null=True)
+
+    class Meta:
+        ordering = ("bank__name", "product_type")
 
     def __str__(self):
         return self.get_product_type_display()
