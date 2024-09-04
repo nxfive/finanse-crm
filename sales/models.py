@@ -14,7 +14,7 @@ class Sale(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name="sales")
     bank_product = models.ForeignKey(BankProduct, on_delete=models.CASCADE, related_name='sales')
     sale_date = models.DateTimeField(auto_now_add=True)
-    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    amount = models.IntegerField()
     duration_years = models.PositiveIntegerField()  
     status = models.CharField(max_length=50, choices=Status.choices, default=Status.NEW)
 
@@ -25,7 +25,7 @@ class Sale(models.Model):
 class Calculation(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name="calculations")
     bank_product = models.ForeignKey(BankProduct, on_delete=models.CASCADE)
-    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    amount = models.IntegerField()
     duration_years = models.PositiveIntegerField()
     rate = models.DecimalField(max_digits=12, decimal_places=2, null=True)
 
