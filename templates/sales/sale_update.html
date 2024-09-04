@@ -14,12 +14,12 @@
                     {% csrf_token %}
                     <div class="model-element">
                         <div class="as-icone-container">
-                            <p class="as-icone">Client</p><p>{{ form.client }}</p>
+                            <p class="as-icone">Client</p><p>{{ sale.client }}</p>
                         </div>
                     </div>
                     <div class="model-element-one">
                         <div class="as-icone-container">
-                            <p class="as-icone">Product</p><p>{{ form.bank_product }}</p>
+                            <p class="as-icone">Product</p><p>{{ sale.bank_product.bank }}: {{ sale.bank_product }} - {{ sale.bank_product.interest_rate }}%</p>
                         </div>
                     </div>
                     <div class="model-element">
