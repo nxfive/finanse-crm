@@ -1,0 +1,97 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="model-container">
+    <div class="title">
+        <h1>Bank details</h1>
+    </div>
+    <div class="model-cont">
+        <div class="model-content-field">
+            <div class="model-cont-nav">
+                <div class="nav-cont"></div>
+                <div class="model-task-content-nt">
+                    <div class="model-element">
+                        <p><i class="fa-solid fa-building-columns"></i> {{ bank.name }}</p>
+                    </div>
+                    <div class="model-element">
+                        <div class="as-icone-container">
+                            <p class="as-icone">Established</p><p> {{ bank.established }}</p>
+                        </div>
+                        <div class="as-icone-container">
+                            <p class="as-icone">Chairman</p><p> {{ bank.chairman}}</p>
+                        </div>
+                    </div>
+                    <div class="model-element">
+                        <div class="as-icone-container">
+                            <p class="as-icone">Headquarters</p><p> {{ bank.headquarters}}</p>
+                        </div>
+                        <div class="as-icone-container">
+                            <p class="as-icone">Customer Service</p><p> {{ bank.customer_service}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="model-content">
+                <div class="model-element">
+                    <h3>Address</h3>
+                </div>
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Street</p><p> {{ bank.address.street_name}}</p>
+                    </div>
+                    <div class="as-icone-container">
+                        <p class="as-icone">City</p><p> {{ bank.address.city}}</p>
+                    </div>
+                </div>
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Building Number</p><p> {{ bank.address.building_number}}</p>
+                    </div>
+                    <div class="as-icone-container">
+                        <p class="as-icone">Apartment Number</p><p> 
+                            {% if bank.address.apartment_number %}
+                            {{ bank.address.apartment_number}}
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Zip Code</p><p> {{ bank.address.zip_code}}</p>
+                    </div>
+                    <div class="as-icone-container">
+                        <p class="as-icone">Country</p><p> {{ bank.address.country}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="model-action-cont">
+            <ul>
+                {% if user.is_superuser %}
+                <li>
+                    <a href="{% url 'banks:bank-update' bank.pk %}">
+                        <h3>Update Bank</h3>
+                        <p class="det-icon"><i class="fa-solid fa-pen-to-square"></i></p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'banks:bank-delete' bank.pk %}">
+                        <h3>Delete Bank</h3>
+                        <p class="det-icon"><i class="fa-solid fa-trash"></i></p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'banks:bank-product-create' %}">
+                        <h3>Create Product</h3>
+                        <p class="det-icon"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-money-check-dollar"></i></p>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
