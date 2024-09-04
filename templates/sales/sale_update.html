@@ -1,0 +1,43 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="model-container">
+    <div class="title">
+        <h1>Sale update</h1>
+    </div>
+    <div class="model-cont-sale">
+        <div class="sale-container">
+            <div class="model-content max-heigh">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="model-element">
+                        <div class="as-icone-container">
+                            <p class="as-icone">Client</p><p>{{ form.client }}</p>
+                        </div>
+                    </div>
+                    <div class="model-element-one">
+                        <div class="as-icone-container">
+                            <p class="as-icone">Product</p><p>{{ form.bank_product }}</p>
+                        </div>
+                    </div>
+                    <div class="model-element">
+                        <div class="as-icone-container">
+                            <p class="as-icone">Amount</p><p>{{ form.amount }}</p>
+                        </div>
+                        <div class="as-icone-container">
+                            <p class="as-icone">Duration [y]</p><p>{{ form.duration_years }}</p>
+                        </div>
+                    </div>
+                    <div class="model-element-action">
+                        <a href="{% url 'sales:sale-list' %}"><i class="fa-solid fa-arrow-left"></i>Sales</a>
+                        <button type="submit" class="btn-agent-up">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
