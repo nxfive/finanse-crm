@@ -1,0 +1,63 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="model-container">
+    <div class="title">
+        <h1>Sale details</h1>
+    </div>
+    <div class="model-cont">
+        <div class="model-content-field">
+            <div class="model-cont-nav">
+                <div class="nav-cont"></div>
+                <div class="model-task-content-nt">
+                    <div class="model-element">
+                        <div class="as-icone-container">
+                            <p class="as-icone">Client</p><p> {{ sale.client }}</p>
+                        </div>
+                    </div>
+                    <div class="model-element">
+                        <div class="as-icone-container">
+                            <p class="as-icone">Product</p><p> {{ sale.bank_product.bank }}: {{ sale.bank_product }} - {{ sale.bank_product.interest_rate }}%</p>
+                        </div>
+                    </div>
+                    <div class="model-element">
+                        <div class="as-icone-container">
+                            <p class="as-icone">Sale Date</p><p>  {{ sale.sale_date }}</p>
+                        </div>
+                        <div class="as-icone-container">
+                            <p class="as-icone">Amount</p><p> {{ sale.amount }} $</p>
+                        </div>
+                    </div>
+                    <div class="model-element">
+                        <div class="as-icone-container">
+                            <p class="as-icone">Duration</p><p> {{ sale.duration_years }} year/s</p>
+                        </div>
+                        <div class="as-icone-container">
+                            <p class="as-icone">Status</p><p> {{ sale.status }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="model-action-cont">
+            <ul>
+                <li>
+                    <a href="{% url 'sales:sale-update' sale.pk %}">
+                        <h3>Update Sale</h3>
+                        <p class="det-icon"><i class="fa-solid fa-pen-to-square"></i></p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'sales:sale-delete' sale.pk %}">
+                        <h3>Delete Sale</h3>
+                        <p class="det-icon"><i class="fa-solid fa-trash"></i></p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
