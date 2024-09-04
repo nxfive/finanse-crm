@@ -1,0 +1,67 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="model-container">
+    <div class="title">
+        <h1>Bank Product details</h1>
+    </div>
+    <div class="model-cont">
+        <div class="model-content-field">
+            <div class="model-cont-nav">
+                <div class="nav-cont"></div>
+                <div class="model-task-content-nt">
+                    <div class="model-element">
+                        <p><i class="fa-solid fa-building-columns"></i> {{ product.bank }}</p>
+                    </div>
+                    <div class="model-element">
+                        <div class="as-icone-container">
+                            <p class="as-icone">Type</p><p> {{ product.product_type }}</p>
+                        </div>
+                        <div class="as-icone-container">
+                            <p class="as-icone">Interest Rate</p><p> {{ product.interest_rate }} %</p>
+                        </div>
+                    </div>
+                    <div class="model-element">
+                        <div class="as-icone-container">
+                            <p class="as-icone">Description</p><p> {{ product.description }}</p>
+                        </div>
+                    </div>
+                    <div class="model-element">
+                        <div class="as-icone-container">
+                            <p class="as-icone">Terms</p><p> {{ product.terms }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="model-action-cont">
+            <ul>
+                {% if user.is_superuser %}
+                <li>
+                    <a href="{% url 'banks:bank-product-update' product.pk %}">
+                        <h3>Update Product</h3>
+                        <p class="det-icon"><i class="fa-solid fa-pen-to-square"></i></p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'banks:bank-product-delete' product.pk %}">
+                        <h3>Delete Product</h3>
+                        <p class="det-icon"><i class="fa-solid fa-trash"></i></p>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+            <div class="model-del-cont">
+                <h3>Are you sure you want to delete this product?</h3>
+                <form method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-delete-sub">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
