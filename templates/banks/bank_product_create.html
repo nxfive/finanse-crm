@@ -1,0 +1,44 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+
+{% block content %}
+<div class="model-container">
+    <div class="title">
+        <h1>Bank Product create</h1>
+    </div>
+    <div class="model-cont">
+        <div class="model-content">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="model-element">
+                    <p><i class="fa-solid fa-building-columns"></i> {{ form.bank }}</p>
+                </div>
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Type</p><p> {{ form.product_type }}</p>
+                    </div>
+                    <div class="as-icone-container">
+                        <p class="as-icone">Interest Rate</p><p> {{ form.interest_rate }}</p>
+                    </div>
+                </div>
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Description</p><p> {{ form.description }}</p>
+                    </div>
+                </div>
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Terms</p><p> {{ form.terms }}</p>
+                    </div>
+                </div>
+                <div class="model-element-action">
+                    <a href="{% url 'banks:bank-product-list' %}"><i class="fa-solid fa-arrow-left"></i>Products</a>
+                    <button type="submit" class="btn-agent-up">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
