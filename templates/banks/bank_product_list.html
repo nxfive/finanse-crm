@@ -1,0 +1,79 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="lead-list">
+    <div class="title">
+        <h1>Bank Products</h1>
+    </div>
+    {% include 'alerts.html' %}
+    <div class="list-container">
+        <div class="list-icons">
+            {% if user.is_superuser%}
+            <a href="{% url 'banks:bank-product-create' %}">Create</a>
+            {% endif %}
+        </div>
+        <div class="lead-content">
+            <table class="content-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Bank</th>
+                        <th>Type</th>
+                        <th>Interest Rate [%]</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr>
+                        <td>{{ product.pk }}</a></td>
+                        <td>{{ product.bank }}</td>
+                        <td>{{ product.product_type }}</td>
+                        <td>{{ product.interest_rate }}</td>
+                        <td class="action">
+                            <a class="action-detail" href="{% url 'banks:bank-product-detail' product.pk %}">Details</a>
+                            {% if user.is_superuser %}
+                            <a class="action-update" href="{% url 'banks:bank-product-update' product.pk %}">Update</a>
+                            <a class="action-delete" href="{% url 'banks:bank-product-delete' product.pk %}">Delete</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="page-pagination">
+        {% if products.has_other_pages %}
+        <ul class="pagination-items">
+            {% if products.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ products.previous_page_number }}"><i class="fa-solid fa-angle-left"></i></a></li>
+            {% else %}
+            <li class="page-item disabled"><a class="page-link" href="#"><i class="fa-solid fa-angle-left"></i></a></li>
+            {% endif %}
+    
+            {% for i in products.paginator.page_range %}
+                {% if i == 1 or i == products.paginator.num_pages or i >= products.number|add:-2 and i <= products.number|add:2 %}
+                    {% if products.number == i %}
+                    <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
+                    {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                {% elif i == products.number|add:-3 or i == products.number|add:3 %}
+                    <li class="page-item disabled"><a class="page-link" href="#">...</a></li>
+                {% endif %}
+            {% endfor %}
+    
+            {% if products.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ products.next_page_number }}"><i class="fa-solid fa-angle-right"></i></a></li>
+            {% else %}
+            <li class="page-item disabled"><a class="page-link" href="#"><i class="fa-solid fa-angle-right"></i></a></li>
+            {% endif %}
+        </ul>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock content %}
