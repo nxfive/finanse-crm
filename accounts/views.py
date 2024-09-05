@@ -1,19 +1,19 @@
-from django.http import Http404, HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404, render
 from django.core.mail import send_mail
 from django.contrib import auth, messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
-from django.shortcuts import redirect
-from .forms import LoginForm, SignupForm, UserProfileForm
-from .models import Account, UserProfile
-from core.utils import paginate_queryset
+from django.http import Http404, HttpRequest, HttpResponse
+from django.shortcuts import redirect, get_object_or_404, render
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.utils.crypto import get_random_string
+
+from .forms import LoginForm, SignupForm, UserProfileForm
+from .models import Account, UserProfile
+from core.utils import paginate_queryset
 
 
 @login_required
@@ -48,8 +48,10 @@ def signup(request: HttpRequest) -> HttpResponse:
             if Account.objects.filter(email=form.cleaned_data["email"]).exists():
                 messages.info(request, "Account with this email already exists.")
                 return redirect("signup")
-            
-            user = Account.objects.create(username=form.cleaned_data["username"], email=form.cleaned_data["email"])
+
+            user = Account.objects.create(
+                username=form.cleaned_data["username"], email=form.cleaned_data["email"]
+            )
 
             send_mail(
                 subject="Activate Your Account",
@@ -103,12 +105,15 @@ def activate(request: HttpRequest, uidb64: str, token: str) -> HttpResponse:
             from_email="no-reply@bieniasdev.com",
             recipient_list=[user.email],
         )
-        messages.success(request, "Your account has been confirmed. Check your email for the temporary password.")
+        messages.success(
+            request,
+            "Your account has been confirmed. Check your email for the temporary password.",
+        )
         return redirect("activation-complete")
     else:
         messages.error(request, "The confirmation link was invalid.")
         return redirect("activation-invalid")
-    
+
 
 def activation_sent(request: HttpRequest) -> HttpResponse:
     return render(request, "accounts/activation_sent.html")
@@ -153,7 +158,7 @@ def change_password(request: HttpRequest) -> HttpResponse:
 def update_profile(request: HttpRequest, username: str) -> HttpResponse:
     if request.user.username != username:
         raise Http404
-    
+
     profile = get_object_or_404(UserProfile, user=request.user)
     if request.method == "POST":
         form = UserProfileForm(request.POST, request.FILES, instance=profile)
@@ -163,3 +168,15 @@ def update_profile(request: HttpRequest, username: str) -> HttpResponse:
     else:
         form = UserProfileForm(instance=profile)
     return render(request, "accounts/profile_update.html", {"form": form})
+
+
+@login_required
+def view_profile(request: HttpRequest, username: str):
+    if request.user.username != username:
+        return Http404
+
+    return render(
+        request,
+        "accounts/profile.html",
+        {"profile": get_object_or_404(UserProfile, user=request.user)},
+    )
