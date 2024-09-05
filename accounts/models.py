@@ -74,4 +74,10 @@ class Account(AbstractBaseUser):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(Account, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to=f"photos/userprofile/{user.pk}/", default="photos/userprofile/default.png")
+    image = models.ImageField(upload_to=f"photos/userprofile/", default="photos/userprofile/default.png")
+
+    def save(self, *args, **kwargs):
+        if self.pk: 
+            self.image.upload_to = f"photos/userprofile/user_{self.user.pk}/"
+        
+        super().save(*args, **kwargs)
