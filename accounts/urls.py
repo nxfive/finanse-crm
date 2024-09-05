@@ -12,6 +12,8 @@ from django.contrib.auth.views import (
 urlpatterns = [
     path("", views.list_accounts, name="account-list"),
     path("dashboard/<slug:username>/", views.dashboard, name="dashboard"),
+    path("dashboard/<slug:username>/profile/", views.view_profile, name="profile"),
+    path("dashboard/<slug:username>/profile/update/", views.update_profile, name="profile-update"),
     path("login/", views.login, name="login"),
     path("logout/", LogoutView.as_view(), name="logout"),
     path("signup/", views.signup, name="signup"),
@@ -23,4 +25,5 @@ urlpatterns = [
     path("password-reset/confirm/<uidb64>/<token>/", PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
     path("password-reset/complete/", PasswordResetCompleteView.as_view(), name="password_reset_complete"),
     path("password-reset/done/", PasswordResetDoneView.as_view(), name="password_reset_done"),
+    path("password-change/", views.change_password, name="password-change"),
 ]
