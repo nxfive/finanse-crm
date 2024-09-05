@@ -1,5 +1,5 @@
-from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render
+from django.http import Http404, HttpRequest, HttpResponse
+from django.shortcuts import get_object_or_404, render
 from django.core.mail import send_mail
 from django.contrib import auth, messages
 from django.contrib.auth.decorators import login_required
@@ -7,7 +7,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
 from django.shortcuts import redirect
-from .forms import LoginForm, SignupForm
+from .forms import LoginForm, SignupForm, UserProfileForm
 from .models import Account, UserProfile
 from core.utils import paginate_queryset
 from django.template.loader import render_to_string
@@ -147,3 +147,19 @@ def change_password(request: HttpRequest) -> HttpResponse:
     else:
         form = PasswordChangeForm(request.user)
     return render(request, "accounts/password_change.html", {"form": form})
+
+
+@login_required
+def update_profile(request: HttpRequest, username: str) -> HttpResponse:
+    if request.user.username != username:
+        raise Http404
+    
+    profile = get_object_or_404(UserProfile, user=request.user)
+    if request.method == "POST":
+        form = UserProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect("profile", username=username)
+    else:
+        form = UserProfileForm(instance=profile)
+    return render(request, "accounts/profile_update.html", {"form": form})
