@@ -52,7 +52,7 @@
                 </div>
             </div>
             <div class="nav-logout">
-                <a href="">
+                <a href="{% url 'logout' %}">
                     <i class='bx bx-log-out' ></i>
                     Logout
                 </a>
@@ -63,7 +63,7 @@
                 <div><a href="{% url 'dashboard' user.username %}"><h1>Dashboard</h1></a></div>
                 <div class="header-dash-note">
                     <a href=""><i class="fa-solid fa-bell"></i></a>
-                    <a href=""><h3>{{ user.username }}</h3></a>
+                    <a href="{% url 'profile' user.username %}"><h3>{{ user.username }}</h3></a>
                 </div>
             </div>
         </div>
