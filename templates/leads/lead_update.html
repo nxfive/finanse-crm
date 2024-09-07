@@ -20,18 +20,22 @@
                     <div class="as-icone-container">
                         <p class="as-icone">Product</p><p> {{ form.product }} </p>
                     </div>
+                    <p><i class="fa-solid fa-phone"></i> {{ form.phone_number }}</p>
                 </div>
                 <div class="model-element">
                     <div class="as-icone-container">
                         <p class="as-icone">Status</p><p> {{ form.status }}</p>
                     </div>
                     <div class="as-icone-container">
-                        <p class="as-icone">To Sales</p><p> {{ form.sales_lead}}</p>
+                        <p class="as-icone">To Sales</p><p> {{ form.to_sales }}</p>
                     </div>
                 </div>
-                <div class="model-element-up">
-                    <p><i class="fa-solid fa-note-sticky"></i> {{ form.description }}</p>
+                <div class="model-element">
+                    <div class="as-icone-container">
+                        <p class="as-icone">Description</p><p> {{ form.description }}</p>
+                    </div>
                 </div>
+                {% include 'errors.html' %}
                 <div class="model-element-action">
                     <a href="{% url 'leads:lead-list' %}"><i class="fa-solid fa-arrow-left"></i>Leads</a>
                     <button type="submit" class="btn-agent-up">Update</button>
