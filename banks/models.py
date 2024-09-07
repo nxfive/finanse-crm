@@ -20,6 +20,7 @@ class Bank(models.Model):
 
 class BankProduct(models.Model):
     class ProductType(models.TextChoices):
+        NONE = "", _("Select Product Type")
         MORTGAGE_LOAN = "Mortgage Loan", _("Mortgage Loan"),
         PERSONAL_LOAN = "Personal Loan", _("Personal Loan"),
         CREDIT_CARD = "Credit Card", _("Credit Card"),
